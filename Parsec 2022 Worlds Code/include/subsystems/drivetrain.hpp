@@ -14,7 +14,9 @@ class Drivetrain{
     pros::ADIEncoder* leftEncoder;
     pros::ADIEncoder* backEncoder;
 
-    protected:
+    pros::c::ext_adi_ultrasonic_t driveUltrasonic;
+
+    public:
         Drivetrain();
 
         // MOTOR METHODS
@@ -24,8 +26,7 @@ class Drivetrain{
 
         void runRightDriveVelocity(int Velocity);
         void runLeftDriveVelocity(int Velocity);
-    
-    public:
+
         // MOTOR MODES
         void setCoast();
         void setBrake();
@@ -37,8 +38,8 @@ class Drivetrain{
 
         // ENCODER METHODS
         int getRightEncoderRaw();
-        int getLeftEncorderRaw();
-        int getBackEncorderRaw();
+        int getLeftEncoderRaw();
+        int getBackEncoderRaw();
 
         int getAverageEncorderRaw();
 
@@ -49,12 +50,12 @@ class Drivetrain{
         double getEncoderInchesAverage();
 
         double ticksToInches(int ticks);
-        double inchesToTicks(int inches);
 
         void resetEncoders();
 
-        // JOYSTICK THROTTLING 
-        double exponentialDrive(int joystickVal);
+        // ULTRASONIC METHODS
+
+        int getDistance();
 };
 
 #endif

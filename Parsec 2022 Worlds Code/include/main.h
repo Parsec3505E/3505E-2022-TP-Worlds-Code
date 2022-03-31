@@ -36,6 +36,20 @@
 
 #include "api.h"
 
+
+// Subsystem #includes
+
+#include "subsystems/drivetrain.hpp"
+#include "subsystems/intake.hpp"
+#include "subsystems/arm.hpp"
+#include "subsystems/primary.hpp"
+
+// Motion
+
+#include "motion/odometry.hpp"
+
+
+
 /**
  * You should add more #includes here
  */
