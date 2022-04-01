@@ -47,6 +47,7 @@
 // Motion
 
 #include "motion/odometry.hpp"
+#include "motion/chassis_control.hpp"
 
 
 

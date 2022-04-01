@@ -56,6 +56,3 @@ void Intake::resetEncoder()
 {
     intakeMotor->tare_position();
 }
-
-
-

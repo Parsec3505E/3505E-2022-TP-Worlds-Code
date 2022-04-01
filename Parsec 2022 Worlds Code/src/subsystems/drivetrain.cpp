@@ -101,27 +101,27 @@ int Drivetrain::getBackEncoderRaw()
 
 int Drivetrain::getAverageEncorderRaw()
 {
-    return (getRightEncoderRaw() + getLeftEncorderInches()) / 2;
+    return (getRightEncoderRaw() + getLeftEncoderInches()) / 2;
 }
 
-double Drivetrain::getRightEncorderInches()
+double Drivetrain::getRightEncoderInches()
 {
     return ticksToInches(getRightEncoderRaw());
 }
 
-double Drivetrain::getLeftEncorderInches()
+double Drivetrain::getLeftEncoderInches()
 {
     return ticksToInches(getLeftEncoderRaw());
 }
 
-double Drivetrain::getBackEncorderInches()
+double Drivetrain::getBackEncoderInches()
 {
     return ticksToInches(getBackEncoderRaw());
 }
 
 double Drivetrain::getEncoderInchesAverage()
 {
-    return (getRightEncorderInches() + getLeftEncorderInches()) / 2;
+    return (getRightEncoderInches() + getLeftEncoderInches()) / 2;
 }
 
 void Drivetrain::resetEncoders()
