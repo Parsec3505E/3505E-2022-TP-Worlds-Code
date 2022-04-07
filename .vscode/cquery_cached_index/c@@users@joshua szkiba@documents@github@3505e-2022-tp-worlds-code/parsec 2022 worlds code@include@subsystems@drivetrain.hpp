@@ -3,6 +3,8 @@
 
 #include "main.h"
 
+extern const double PI;
+
 class Drivetrain{
 
     pros::Motor* rightFront;
@@ -18,7 +20,7 @@ class Drivetrain{
     pros::c::ext_adi_encoder_t leftEncoder;
     pros::c::ext_adi_encoder_t backEncoder;
 
-    pros::c::ext_adi_ultrasonic_t driveUltrasonic;
+    // pros::c::ext_adi_ultrasonic_t driveUltrasonic;
 
     public:
         Drivetrain();
@@ -47,19 +49,19 @@ class Drivetrain{
 
         int getAverageEncorderRaw();
 
-        // double getRightEncoderInches();
-        // double getLeftEncoderInches();
+        double getRightEncoderInches();
+        double getLeftEncoderInches();
         // double getBackEncoderInches();
 
-        // double getEncoderInchesAverage();
+        double getEncoderInchesAverage();
 
-        // double ticksToInches(int ticks);
+        double ticksToInches(int ticks);
 
         void resetEncoders();
 
         // ULTRASONIC METHODS
 
-        int getDistance();
+        // int getDistance();
 };
 
 #endif

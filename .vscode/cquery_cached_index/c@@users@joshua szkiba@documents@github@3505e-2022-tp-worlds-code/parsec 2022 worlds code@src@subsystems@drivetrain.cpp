@@ -1,5 +1,7 @@
 #include "main.h"
 
+const double PI = 3.14159265358979323846;
+
 Drivetrain::Drivetrain()
 {
 
@@ -25,11 +27,11 @@ Drivetrain::Drivetrain()
     // leftEncoder = new pros::ADIEncoder('C', 'D');
     // backEncoder = new pros::ADIEncoder('E', 'F');
 
-    rightEncoder = pros::c::ext_adi_encoder_init(2, 'A', 'B', true);
-    leftEncoder = pros::c::ext_adi_encoder_init(2, 'A', 'B', false);
-    backEncoder = pros::c::ext_adi_encoder_init(2, 'A', 'B', false);
+    rightEncoder = pros::c::ext_adi_encoder_init(3, 'A', 'B', true);
+    leftEncoder = pros::c::ext_adi_encoder_init(3, 'C', 'D', false);
+    backEncoder = pros::c::ext_adi_encoder_init(3, 'E', 'F', false);
 
-    driveUltrasonic = pros::c::ext_adi_ultrasonic_init(2, 'A', 'B');
+    // driveUltrasonic = pros::c::ext_adi_ultrasonic_init(2, 'A', 'B');
 
 }
 
@@ -108,25 +110,25 @@ int Drivetrain::getAverageEncorderRaw()
     return (getRightEncoderRaw() + getLeftEncoderRaw()) / 2;
 }
 
-// double Drivetrain::getRightEncoderInches()
-// {
-//     return ticksToInches(getRightEncoderRaw());
-// }
+double Drivetrain::getRightEncoderInches()
+{
+    return ticksToInches(getRightEncoderRaw());
+}
 
-// double Drivetrain::getLeftEncoderInches()
-// {
-//     return ticksToInches(getLeftEncoderRaw());
-// }
+double Drivetrain::getLeftEncoderInches()
+{
+    return ticksToInches(getLeftEncoderRaw());
+}
 
 // double Drivetrain::getBackEncoderInches()
 // {
 //     return ticksToInches(getBackEncoderRaw());
 // }
 
-// double Drivetrain::getEncoderInchesAverage()
-// {
-//     return (getRightEncoderInches() + getLeftEncoderInches()) / 2;
-// }
+double Drivetrain::getEncoderInchesAverage()
+{
+    return (getRightEncoderInches() + getLeftEncoderInches()) / 2;
+}
 
 void Drivetrain::resetEncoders()
 {
@@ -135,10 +137,15 @@ void Drivetrain::resetEncoders()
     pros::c::ext_adi_encoder_reset(backEncoder);
 }
 
-int Drivetrain::getDistance()
+double Drivetrain::ticksToInches(int ticks)
 {
-    return pros::c::ext_adi_ultrasonic_get(driveUltrasonic);
+    return (double)(ticks * (2.75*PI)/360);
 }
+
+// int Drivetrain::getDistance()
+// {
+//     return pros::c::ext_adi_ultrasonic_get(driveUltrasonic);
+// }
 
 
 

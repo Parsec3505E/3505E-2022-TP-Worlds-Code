@@ -11,5 +11,6 @@ const double LEFT_ALLIANCE_Y = 0;
 void highNeutralWinPoint()
 {
     drivetrain.resetEncoders();
-    driveTo(TALL_NEUTRAL_X, TALL_NEUTRAL_Y, PI / 2);
+    driveToPID(30);
+    
 }

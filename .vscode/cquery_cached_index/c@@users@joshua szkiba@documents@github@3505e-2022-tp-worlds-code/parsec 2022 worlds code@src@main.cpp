@@ -1,7 +1,8 @@
 #include "main.h"
 
-pros::task_t odometry = (pros::task_t)NULL;
-pros::task_t chassisControl = (pros::task_t)NULL;
+
+// pros::task_t odometry = (pros::task_t)NULL;
+// pros::task_t chassisControl = (pros::task_t)NULL;
 
 
 /**
@@ -62,7 +63,9 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+
+
+void autonomous() {
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -78,13 +81,19 @@ void autonomous() {}
  * task, not resume it from where it left off.
  */
 
-chassisControl = pros::Task(chassis_control);
-odometry = pros::Task(poseTracking);
+// chassisControl = pros::Task(chassis_control);
+// odometry = pros::Task(poseTracking);
+
+// highNeutralWinPoint();
+
+pros::Task task(PIDControl);
 
 highNeutralWinPoint();
 
-void opcontrol() {
+}
 
+
+void opcontrol(){
 	// Subsystems
 	Drivetrain drive = Drivetrain();
 	Intake intake = Intake();

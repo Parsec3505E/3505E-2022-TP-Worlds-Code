@@ -7,13 +7,22 @@ extern double xTargetLocation;
 extern double yTargetLocation;
 extern double targetFacingAngle;
 
-extern void driveTo(double xTarget, double yTarget, double targetAngle);
-extern void turnTo(double targetAngle);
-extern double turnToPoint();
+extern void odomDriveTo(double xTarget, double yTarget, double targetAngle);
+extern void odomTurnTo(double targetAngle);
+extern double odomTurnToPoint();
 void setDrivePower(double theta);
+void odomDrivePID();
+void odomTurnPID();
+
+int odomcCassisControl();
+
+extern void driveToPID(double inches);
+extern void turnToPID();
+
 void drivePID();
 void turnPID();
 
-int chassis_control();
+int PIDControl();
+
 
 #endif

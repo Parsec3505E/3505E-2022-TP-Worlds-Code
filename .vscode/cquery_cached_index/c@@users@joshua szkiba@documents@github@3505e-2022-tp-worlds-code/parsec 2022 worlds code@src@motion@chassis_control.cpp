@@ -1,5 +1,7 @@
 #include "motion/chassis_control.hpp"
 
+// ########################### USING ODOMETRY ###########################
+
 double xTargetLocation = xPoseGlobal;
 double yTargetLocation = yPoseGlobal;
 double targetFacingAngle = 0;
@@ -11,14 +13,14 @@ double hypotenuseAngle = 0;
 
 double robotRelativeAngle = 0;
 
-void driveTo(double xTarget, double yTarget, double targetAngle)
+void odomDriveTo(double xTarget, double yTarget, double targetAngle)
 {
     xTargetLocation = xTarget;
     yTargetLocation = yTarget;
     targetFacingAngle = targetAngle;
 }
 
-void turnTo(double targetAngle)
+void odomTurnTo(double targetAngle)
 {
     targetFacingAngle = targetAngle;
     xTargetLocation = xPoseGlobal;
@@ -47,56 +49,59 @@ double getDistToTarget(){
 
 // Drive PID variables/gains
 
-double driveError = 0;
-double drivePrevError = 0;
+double odomError = 0;
+double odomPrevError = 0;
+double odomMaxError = 0;
 
-double driveMaxError = 0.1;
+double odomError = 0.1;
 
-double driveIntegral = 0;
-double driveIntegralBound = 1.5;
+double odomIntegral = 0;
+double odomIntegralBound = 1.5;
 
-double driveDerivative = 0;
+double odomDerivative = 0;
 
-double drivekP = 0;
-double drivekI = 0;
-double drivekD = 0;
+double odomkP = 0;
+double odomkI = 0;
+double odomkD = 0;
 
 // The output power of the PID to the motors
-double drivePIDPower = 0;
+double odomPIDPower = 0;
 
-void drivePID()
+void odomDrivePID()
 {
     // Proportional
-    driveError = getDistToTarget();
+    odomError = getDistToTarget();
   
     // Integral
-    if(fabs(driveError) < driveIntegralBound)
+    if(fabs(odomError) < odomIntegralBound)
     {
-    driveIntegral += driveError;
+    odomIntegral += odomError;
     }
     else
     {
-    driveIntegral = 0;
+    odomIntegral = 0;
     }
 
     // Derivative
-    driveDerivative = driveError - drivePrevError;
-    drivePrevError = driveError;
+    odomDerivative = odomError - odomPrevError;
+    odomPrevError = odomError;
 
     // Calculating the power coming out of the PID
-    drivePIDPower = (driveError * drivekP + driveIntegral * drivekI + driveDerivative * drivekD);
+    odomPIDPower = (odomError * odomkP + odomIntegral * odomkI + odomDerivative * odomkD);
 
     //Limit power output to 12V
-    if(drivePIDPower > 12)
+    if(odomPIDPower > 12)
     {
-    drivePIDPower = 12;
+    odomPIDPower = 12;
     }
 
-    if(fabs(driveError) < driveMaxError)
+    if(fabs(odomError) < odomMaxError)
     {
-    drivePIDPower = 0;
+    odomPIDPower = 0;
     }
 }
+
+
 
 // Turn PID variables/gains
 
@@ -116,8 +121,7 @@ double turnkD = 10.00;
 
 double turnPIDPower = 0;
 
-
-void turnPID()
+void odomTurnPID()
 {
   turnError = getAngleToTarget();
 
@@ -156,11 +160,11 @@ void turnPID()
 
 
 // Motor Powers
-double rightSidePower = 0;
-double leftSidePower = 0;
+double odomRightSidePower = 0;
+double odomLeftSidePower = 0;
 
 
-int chassis_control()
+int odomChassisControl()
 {
     while(true)
     {
@@ -189,19 +193,105 @@ int chassis_control()
         }
 
         // Get PID drive and turn powers
-        drivePID();
-        turnPID();
+        odomDrivePID();
+        odomTurnPID();
         
 
-        rightSidePower = drivePIDPower - turnPIDPower;
-        leftSidePower = drivePIDPower + turnPIDPower;
+        odomRightSidePower = drivePIDPower - turnPIDPower;
+        odomLeftSidePower = drivePIDPower + turnPIDPower;
 
         
-        drivetrain.runRightDrive(rightSidePower);
-        drivetrain.runLeftDrive(leftSidePower); 
+        drivetrain.runRightDrive(odomRightSidePower);
+        drivetrain.runLeftDrive(odomLeftSidePower); 
 
         pros::delay(20);
  
     }
     return 1;
 }
+
+
+// ########################### ONLY USING PIDs ###########################
+
+
+
+double driveTarget = 0;
+
+void driveToPID(double inches)
+{
+  driveTarget = inches;
+}
+
+
+double driveError = 0;
+double drivePrevError = 0;
+
+double driveMaxError = 0.1;
+
+double driveIntegral = 0;
+double driveIntegralBound = 1.5;
+
+double driveDerivative = 0;
+
+double drivekP = 3;
+double drivekI = 0;
+double drivekD = 0;
+
+// The output power of the PID to the motors
+double drivePIDPower = 0;
+
+void drivePID(){
+
+    driveError = driveTarget - drivetrain.getEncoderInchesAverage();
+  
+    // Integral
+    if(fabs(driveError) < driveIntegralBound)
+    {
+    driveIntegral += driveError;
+    }
+    else
+    {
+    driveIntegral = 0;
+    }
+
+    // Derivative 
+    driveDerivative = driveError - drivePrevError;
+    drivePrevError = driveError;
+
+    // Calculating the power coming out of the PID
+    drivePIDPower = (driveError * drivekP + driveIntegral * drivekI + driveDerivative * drivekD);
+
+    //Limit power output to 12V
+    if(drivePIDPower > 12)
+    {
+    drivePIDPower = 12;
+    }
+
+    if(fabs(driveError) < driveMaxError)
+    {
+    drivePIDPower = 0;
+    }
+
+}
+
+double rightSidePower = 0;
+double leftSidePower =0;
+
+
+int PIDControl()
+{
+  while(true){
+    drivePID();
+
+    rightSidePower = drivePIDPower - turnPIDPower;
+    leftSidePower = drivePIDPower + turnPIDPower;
+
+    
+    drivetrain.runRightDrive(rightSidePower);
+    drivetrain.runLeftDrive(leftSidePower); 
+  }
+  
+
+}
+
+
