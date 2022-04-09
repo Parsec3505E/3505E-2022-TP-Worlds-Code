@@ -12,13 +12,13 @@ class Drivetrain{
     pros::Motor* rightBack;
     pros::Motor* leftBack;
 
-    // pros::ADIEncoder* rightEncoer;
-    // pros::ADIEncoder* leftEncoer;
-    // pros::ADIEncoder* backEncoder;
+    pros::ADIEncoder* rightEncoder;
+    pros::ADIEncoder* leftEncoder;
+    pros::ADIEncoder* backEncoder;
 
-    pros::c::ext_adi_encoder_t rightEncoder;
-    pros::c::ext_adi_encoder_t leftEncoder;
-    pros::c::ext_adi_encoder_t backEncoder;
+    // pros::c::ext_adi_encoder_t rightEncoder;
+    // pros::c::ext_adi_encoder_t leftEncoder;
+    // pros::c::ext_adi_encoder_t backEncoder;
 
     // pros::c::ext_adi_ultrasonic_t driveUltrasonic;
 

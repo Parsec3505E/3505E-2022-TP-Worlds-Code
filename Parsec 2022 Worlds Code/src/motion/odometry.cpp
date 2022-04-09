@@ -4,18 +4,19 @@
 
 //const double PI = 3.14159265358979323846;
 
-//Radius of tracking wheels in inches
+//Diameter of tracking wheels in inches
 double WHEEL_RADIUS = 2.75;
 
 //Starting angle (relative to field) (RADIANS)
-double THETA_START = PI / 2; //imagine the field is a unit circle
+double THETA_START = 0; //imagine the field is a unit circle
 
-double X_START = 115; 
-double Y_START = 9;
+double X_START = 0; 
+double Y_START = 0;
 
 //Distances of tracking wheels from tracking center (INCHES)
 double rTrackRadius = 4.75;
 double lTrackRadius = 4.75;
+//Might need to be negative
 double bTrackRadius = 1.04;
 
 //Calculated Values (every loop)
@@ -66,44 +67,50 @@ void poseTracking(void* arg){
         lEncoderPose = drive_temp.getLeftEncoderRaw();
         bEncoderPose = drive_temp.getBackEncoderRaw();
 
-        deltaDistL = ((lEncoderPose - lPrevPose) * PI / 180) * WHEEL_RADIUS;
-        deltaDistR = ((rEncoderPose - rPrevPose) * PI / 180) * WHEEL_RADIUS;
-        deltaDistB = ((bEncoderPose - bPrevPose) * PI / 180) * WHEEL_RADIUS;
-
-        rEncoderPose = rPrevPose;
-        lEncoderPose = lPrevPose;
-        bEncoderPose = bPrevPose;
+        deltaDistL = ((lEncoderPose - lPrevPose)/360) * PI * WHEEL_RADIUS;
+        deltaDistR = ((rEncoderPose - rPrevPose)/360) * PI * WHEEL_RADIUS;
+        deltaDistB = ((bEncoderPose - bPrevPose)/360) * PI * WHEEL_RADIUS;
 
         totalDeltaDistL += deltaDistL;
         totalDeltaDistR += deltaDistR;
 
-        heading = THETA_START - (deltaDistL - deltaDistR) / (lTrackRadius + rTrackRadius);
-        deltaHeading = heading - prevHeading;
+        deltaHeading = (deltaDistL - deltaDistR) / (lTrackRadius + rTrackRadius);
 
-        prevHeading = heading;
+        heading += deltaHeading;
 
-        if(deltaHeading == 0){
+        if(deltaHeading == 0 ){
             deltaXLocal = deltaDistB;
             deltaYLocal = (deltaDistL + deltaDistR)/2;
         }else{
-            deltaYLocal = 2*sin(deltaHeading/2) * (deltaDistR / deltaHeading) - rTrackRadius;
-            deltaXLocal = 2*sin(deltaHeading/2) * (deltaDistB / deltaHeading) + bTrackRadius;
+            deltaYLocal = 2*sin(deltaHeading/2) * ((deltaDistR / deltaHeading) - rTrackRadius);
+            deltaXLocal = 2*sin(deltaHeading/2) * ((deltaDistB / deltaHeading) + bTrackRadius);
         }
+        //When encoder moves left it should be negative
 
-        deltaXGlobal = sin(deltaHeading/2)*deltaXLocal + cos(deltaHeading/2)*deltaYLocal;
-        deltaYGlobal = cos(deltaHeading/2)*deltaXLocal - sin(deltaHeading/2)*deltaYLocal;
+        deltaXGlobal = cos(heading + (deltaHeading/2))*deltaXLocal + sin(heading + (deltaHeading/2))*deltaYLocal;
+        deltaYGlobal = - sin(heading + (deltaHeading/2))*deltaXLocal + cos(heading + (deltaHeading/2))*deltaYLocal;
 
+        /*
         while(heading >= 2 * PI) {
             heading -= 2 * PI;
         }
 
+        
         while(heading < 0) {
             heading += 2 * PI;
         }
+        */
 
         //Update global positions
         xPoseGlobal += deltaXGlobal;
         yPoseGlobal += deltaYGlobal;
+
+        rPrevPose = rEncoderPose;
+        lPrevPose = lEncoderPose;
+        bPrevPose = bEncoderPose;
+
+        pros::Controller driver(pros::E_CONTROLLER_MASTER);
+        driver.print(2,2,"%.1f %.1f %.1f\n", xPoseGlobal, yPoseGlobal, heading);
 
         pros::delay(20);
 

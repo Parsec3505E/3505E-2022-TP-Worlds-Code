@@ -79,10 +79,6 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
-	Drivetrain drive = Drivetrain();
-	drive.resetEncoders();
-	odomDriveTo(70.3, 70.3, 0);
-	int a = odomChassisControl(drive);
 
 
 	
@@ -110,19 +106,67 @@ void opcontrol(){
 	int	pto_state = 0;
 	pros::Controller driver(pros::E_CONTROLLER_MASTER);
 	pros::Controller partner(pros::E_CONTROLLER_PARTNER);
-	stick.setHold();
+	stick.setBrake();
 	arm.setCoast();
 
+	//Auton program
+	
+	drive.resetEncoders();
+	drive_arg* track_task_arg = new drive_arg;
+	track_task_arg->drivetrain = drive;
+	pros::Task odomTracking(poseTracking, track_task_arg);
+	/*
 	while(true)
 	{
-		drive.resetEncoders();
+		//driver.print(2,2,"%.2f %.2f\n", drive.getLeftEncoderInches(), drive.getRightEncoderInches());
+		
 		drive_arg* track_task_arg = new drive_arg;
 		track_task_arg->drivetrain = drive;
 		pros::Task odomTracking(poseTracking, track_task_arg);
-		//odomDriveTo(70.3, 70.3, 0);
-		//int a = odomChassisControl(drive);
+		pros::delay(10000000);
+		//pros::Task chassisControl(odomChassisControl, track_task_arg);
+		//drivePowerFactor = 1;
+		//odomDriveTo(70.3, 70.3);
+		
+		while(drive.getRightVelocity() != 0)
+		{	
+			pros::delay(100);
+		}
+		
+		
+		intake.resetEncoder();
+		//Change the value for intake movement
+		while(intake.getEncoderRaw() < 300)
+		{
+			drive.runRightDriveVelocity(-100);
+			drive.runLeftDriveVelocity(-100);			
+			//Change direction or whatever
+			intake.intake(30);
+		}
+		//Change VALUE 100 IN WHILE BELOW
+		while(drive.getEncoderInchesAverage() < 100)
+		{
+			drive.runRightDriveVelocity(-100);
+			drive.runLeftDriveVelocity(-100);
+		}
+		drive.stop();
+		
+		//driver.print(2,2,"%.2f %.2f", xPoseGlobal, yPoseGlobal);
+		//printf("%d %d", drive.getLeftEncoderRaw(), drive.getRightEncoderRaw());
+		
+		drivePowerFactor = 3;
+		odomDriveTo(70.3, 70.3);
+		while(drive.getRightVelocity() != 0)
+		{
+			
+			pros::delay(100);
+		}
+		
+		//Change Angle
+		//odomTurnTo(120 * (PI/180));
 	}
-
+	*/
+	
 	// ###########################################################################
 
 	// pros::Motor left_mtr(1);
@@ -175,10 +219,10 @@ void opcontrol(){
 
 		//Intake/Outtake Control
 		if (driver.get_digital(DIGITAL_R2)) {
-			intake.intake(90);
+			intake.intake(120);
 		}
 		else if (driver.get_digital(DIGITAL_R1)) {
-			intake.outtake(90);
+			intake.outtake(120);
 		}
 		else {
 			intake.stop();

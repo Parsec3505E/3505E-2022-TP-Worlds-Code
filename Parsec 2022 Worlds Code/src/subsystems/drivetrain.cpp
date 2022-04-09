@@ -23,13 +23,13 @@ Drivetrain::Drivetrain()
     leftBack->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
     // Encoder Objects
-    // rightEncoder = new pros::ADIEncoder('A', 'B', true);
-    // leftEncoder = new pros::ADIEncoder('C', 'D');
-    // backEncoder = new pros::ADIEncoder('E', 'F');
+    rightEncoder = new pros::ADIEncoder({{13, 'A', 'B'}});
+    leftEncoder = new pros::ADIEncoder({{13, 'C', 'D'}});
+    backEncoder = new pros::ADIEncoder({{13, 'E', 'F'}});
 
-    rightEncoder = pros::c::ext_adi_encoder_init(3, 'A', 'B', true);
-    leftEncoder = pros::c::ext_adi_encoder_init(3, 'C', 'D', false);
-    backEncoder = pros::c::ext_adi_encoder_init(3, 'E', 'F', false);
+    // rightEncoder = pros::c::ext_adi_encoder_init(13, 'A', 'B', true);
+    // leftEncoder = pros::c::ext_adi_encoder_init(13, 'C', 'D', false);
+    // backEncoder = pros::c::ext_adi_encoder_init(13, 'E', 'F', false);
 
     // driveUltrasonic = pros::c::ext_adi_ultrasonic_init(2, 'A', 'B');
 
@@ -55,6 +55,17 @@ void Drivetrain::runLeftDrive(int voltage)
     leftBack->move(voltage);
 }
 
+void Drivetrain::runRightDriveVelocity(int velocity)
+{
+    rightFront->move_velocity(velocity);
+    rightBack->move_velocity(velocity);
+}
+
+void Drivetrain::runLeftDriveVelocity(int velocity)
+{
+    leftFront->move_velocity(velocity);
+    leftBack->move_velocity(velocity);
+}
 
 void Drivetrain::setBrake()
 {
@@ -92,17 +103,17 @@ double Drivetrain::getLeftVelocity()
 
 int Drivetrain::getRightEncoderRaw()
 {
-    return pros::c::ext_adi_encoder_get(rightEncoder);
+    return (-1 * rightEncoder->get_value());
 }
 
 int Drivetrain::getLeftEncoderRaw()
 {
-    return pros::c::ext_adi_encoder_get(leftEncoder);
+    return leftEncoder->get_value();
 }
 
 int Drivetrain::getBackEncoderRaw()
 {
-    return pros::c::ext_adi_encoder_get(backEncoder);
+    return backEncoder->get_value();
 }
 
 int Drivetrain::getAverageEncorderRaw()
@@ -132,9 +143,9 @@ double Drivetrain::getEncoderInchesAverage()
 
 void Drivetrain::resetEncoders()
 {
-    pros::c::ext_adi_encoder_reset(rightEncoder);
-    pros::c::ext_adi_encoder_reset(leftEncoder); 
-    pros::c::ext_adi_encoder_reset(backEncoder);
+    rightEncoder->reset();
+    leftEncoder->reset();
+    backEncoder->reset();
 }
 
 double Drivetrain::ticksToInches(int ticks)

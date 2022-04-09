@@ -8,14 +8,16 @@ extern double xTargetLocation;
 extern double yTargetLocation;
 extern double targetFacingAngle;
 
-extern void odomDriveTo(double xTarget, double yTarget, double targetAngle);
+extern double drivePowerFactor;
+
+extern void odomDriveTo(double xTarget, double yTarget);
 extern void odomTurnTo(double targetAngle);
 extern double odomTurnToPoint();
 void setDrivePower(double theta);
 void odomDrivePID();
 void odomTurnPID();
 
-int odomChassisControl(Drivetrain drivetrain);
+void odomChassisControl(void* arg);
 
 extern void driveToPID(double inches);
 extern void turnToPID();
