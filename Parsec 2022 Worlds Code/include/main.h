@@ -55,6 +55,11 @@
 #include "autonomous.hpp"
 
 
+//Structs for tasks
+typedef struct{
+	Drivetrain drivetrain;
+} drive_arg;
+
 /**
  * You should add more #includes here
  */

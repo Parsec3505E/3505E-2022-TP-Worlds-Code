@@ -13,11 +13,6 @@ double hypotenuseAngle = 0;
 
 double robotRelativeAngle = 0;
 
-void locationTracking(Drivetrain drivetrain)
-{
-  poseTracking(drivetrain);
-}
-
 void odomDriveTo(double xTarget, double yTarget, double targetAngle)
 {
     xTargetLocation = xTarget;

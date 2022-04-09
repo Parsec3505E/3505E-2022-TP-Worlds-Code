@@ -1,5 +1,5 @@
-#ifndef PRIMARY_HPP
-#define PRIMARY_HPP
+#ifndef ODOMETRY_HPP
+#define ODOMETRY_HPP
 
 #include "main.h"
 
@@ -10,6 +10,6 @@ extern double heading;
 extern double xPoseGlobal;
 extern double yPoseGlobal;
 
-int poseTracking(Drivetrain* drivetrain);
+void poseTracking(void* arg);
 
 #endif

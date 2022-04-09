@@ -3,7 +3,6 @@
 
 #include "motion/odometry.hpp"
 
-void locationTracking(Drivetrain* drivetrain);
 
 extern double xTargetLocation;
 extern double yTargetLocation;

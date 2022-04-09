@@ -59,11 +59,12 @@ double deltaYGlobal = 0;
 double xPoseGlobal = X_START;
 double yPoseGlobal = Y_START;
 
-int poseTracking(Drivetrain* drivetrain){
+void poseTracking(void* arg){
+    Drivetrain drive_temp = ((drive_arg*)arg)->drivetrain;
     while(true){
-        rEncoderPose = drivetrain->getRightEncoderRaw();
-        lEncoderPose = drivetrain->getLeftEncoderRaw();
-        bEncoderPose = drivetrain->getBackEncoderRaw();
+        rEncoderPose = drive_temp.getRightEncoderRaw();
+        lEncoderPose = drive_temp.getLeftEncoderRaw();
+        bEncoderPose = drive_temp.getBackEncoderRaw();
 
         deltaDistL = ((lEncoderPose - lPrevPose) * PI / 180) * WHEEL_RADIUS;
         deltaDistR = ((rEncoderPose - rPrevPose) * PI / 180) * WHEEL_RADIUS;
@@ -107,7 +108,5 @@ int poseTracking(Drivetrain* drivetrain){
         pros::delay(20);
 
     }
-
- return 1;
 
 }

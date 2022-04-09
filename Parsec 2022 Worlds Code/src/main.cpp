@@ -96,6 +96,7 @@ void autonomous() {
 
 }
 
+
 void opcontrol(){
 	// Subsystems
 	Drivetrain drive = Drivetrain();
@@ -115,8 +116,9 @@ void opcontrol(){
 	while(true)
 	{
 		drive.resetEncoders();
-		//pros::Task odomTracking(locationTracking, &drive, TASK_PRIORITY_DEFAULT,
-                //TASK_STACK_DEPTH_DEFAULT, "My Task");
+		drive_arg* track_task_arg = new drive_arg;
+		track_task_arg->drivetrain = drive;
+		pros::Task odomTracking(poseTracking, track_task_arg);
 		//odomDriveTo(70.3, 70.3, 0);
 		//int a = odomChassisControl(drive);
 	}
