@@ -3,6 +3,8 @@
 
 #include "motion/odometry.hpp"
 
+void locationTracking(Drivetrain* drivetrain);
+
 extern double xTargetLocation;
 extern double yTargetLocation;
 extern double targetFacingAngle;
@@ -14,15 +16,15 @@ void setDrivePower(double theta);
 void odomDrivePID();
 void odomTurnPID();
 
-int odomcCassisControl();
+int odomChassisControl(Drivetrain drivetrain);
 
 extern void driveToPID(double inches);
 extern void turnToPID();
 
-void drivePID();
+void drivePID(Drivetrain drivetrain);
 void turnPID();
 
-int PIDControl();
+int PIDControl(Drivetrain drivetrain);
 
 
 #endif

@@ -4,7 +4,7 @@ Primary::Primary()
 {
 
     // Motors
-    spinner = new pros::Motor(19);
+    spinner = new pros::Motor(20);
     spinner->set_reversed(true);
     spinner->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
@@ -20,11 +20,6 @@ void Primary::stop()
 void Primary::spin(int voltage)
 {
     spinner->move(voltage);
-}
-
-void Intake::outtake(int voltage)
-{
-    intakeMotor->move(voltage * -1);
 }
 
 void Primary::triggerMogoClamp(bool trigger)

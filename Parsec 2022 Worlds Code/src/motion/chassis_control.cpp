@@ -13,6 +13,11 @@ double hypotenuseAngle = 0;
 
 double robotRelativeAngle = 0;
 
+void locationTracking(Drivetrain drivetrain)
+{
+  poseTracking(drivetrain);
+}
+
 void odomDriveTo(double xTarget, double yTarget, double targetAngle)
 {
     xTargetLocation = xTarget;
@@ -49,7 +54,7 @@ double getDistToTarget(){
 
 // Drive PID variables/gains
 
-double odomError = 0;
+//double odomError = 0;
 double odomPrevError = 0;
 double odomMaxError = 0;
 
@@ -60,9 +65,9 @@ double odomIntegralBound = 1.5;
 
 double odomDerivative = 0;
 
-double odomkP = 0;
-double odomkI = 0;
-double odomkD = 0;
+double odomkP = 1;
+double odomkI = 1;
+double odomkD = 1;
 
 // The output power of the PID to the motors
 double odomPIDPower = 0;
@@ -89,10 +94,14 @@ void odomDrivePID()
     // Calculating the power coming out of the PID
     odomPIDPower = (odomError * odomkP + odomIntegral * odomkI + odomDerivative * odomkD);
 
-    //Limit power output to 12V
-    if(odomPIDPower > 12)
+    //Limit power output to 127
+    if(odomPIDPower > 127)
     {
-    odomPIDPower = 12;
+      odomPIDPower = 127;
+    }
+    else if(odomPIDPower < -127)
+    {
+      odomPIDPower = -127;
     }
 
     if(fabs(odomError) < odomMaxError)
@@ -163,48 +172,52 @@ void odomTurnPID()
 double odomRightSidePower = 0;
 double odomLeftSidePower = 0;
 
+// The output power of the PID to the motors
+double drivePIDPower = 0;
 
-int odomChassisControl()
+int odomChassisControl(Drivetrain drivetrain)
 {
+  pros::Controller driver(pros::E_CONTROLLER_MASTER);
     while(true)
     {
-        // Distances to target point in both axis
-        xDistToTarget = xTargetLocation - xPoseGlobal;
-        yDistToTarget = yTargetLocation - yPoseGlobal;
+      // Distances to target point in both axis
+      xDistToTarget = xTargetLocation - xPoseGlobal;
+      yDistToTarget = yTargetLocation - yPoseGlobal;
 
-        // Angle of the resultant/hypotenuse vector
-        hypotenuseAngle = atan2(yDistToTarget, xDistToTarget);
+      // Angle of the resultant/hypotenuse vector
+      hypotenuseAngle = atan2(yDistToTarget, xDistToTarget);
 
-        if(hypotenuseAngle < 0 )
-        {
-            hypotenuseAngle += 2 * PI;
-        }
+      if(hypotenuseAngle < 0 )
+      {
+          hypotenuseAngle += 2 * PI;
+      }
 
-        // The angle the robot needs to travel in order to move toward the target
-        robotRelativeAngle = hypotenuseAngle - heading + (2 * PI);
+      // The angle the robot needs to travel in order to move toward the target
+      robotRelativeAngle = hypotenuseAngle - heading + (2 * PI);
 
-        if(robotRelativeAngle > 2)
-        {
-            robotRelativeAngle -= 2 * PI;
-        }
-        else if(robotRelativeAngle < 0)
-        {
-            robotRelativeAngle += 2 * PI;
-        }
+      if(robotRelativeAngle > 2)
+      {
+          robotRelativeAngle -= 2 * PI;
+      }
+      else if(robotRelativeAngle < 0)
+      {
+          robotRelativeAngle += 2 * PI;
+      }
 
-        // Get PID drive and turn powers
-        odomDrivePID();
-        odomTurnPID();
-        
+      // Get PID drive and turn powers
+      odomDrivePID();
+      odomTurnPID();
+      
 
-        odomRightSidePower = drivePIDPower - turnPIDPower;
-        odomLeftSidePower = drivePIDPower + turnPIDPower;
+      odomRightSidePower = odomPIDPower - turnPIDPower + turnPIDPower;
+      odomLeftSidePower = odomPIDPower + turnPIDPower - turnPIDPower;
 
-        
-        drivetrain.runRightDrive(odomRightSidePower);
-        drivetrain.runLeftDrive(odomLeftSidePower); 
-
-        pros::delay(20);
+      
+      drivetrain.runRightDrive(odomRightSidePower);
+      drivetrain.runLeftDrive(odomLeftSidePower); 
+      printf("%d", (int)odomRightSidePower);
+      //driver.print(2,2,"%d", (int)odomRightSidePower);
+      pros::delay(20);
  
     }
     return 1;
@@ -237,10 +250,9 @@ double drivekP = 3;
 double drivekI = 0;
 double drivekD = 0;
 
-// The output power of the PID to the motors
-double drivePIDPower = 0;
 
-void drivePID(){
+
+void drivePID(Drivetrain drivetrain){
 
     driveError = driveTarget - drivetrain.getEncoderInchesAverage();
   
@@ -278,10 +290,10 @@ double rightSidePower = 0;
 double leftSidePower =0;
 
 
-int PIDControl()
+int PIDControl(Drivetrain drivetrain)
 {
   while(true){
-    drivePID();
+    drivePID(drivetrain);
 
     rightSidePower = drivePIDPower - turnPIDPower;
     leftSidePower = drivePIDPower + turnPIDPower;

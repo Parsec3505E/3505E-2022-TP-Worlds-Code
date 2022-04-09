@@ -4,7 +4,7 @@ Intake::Intake()
 {
 
     // Motors
-    intakeMotor = new pros::Motor(19);
+    intakeMotor = new pros::Motor(12);
     intakeMotor->set_reversed(true);
     intakeMotor->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 

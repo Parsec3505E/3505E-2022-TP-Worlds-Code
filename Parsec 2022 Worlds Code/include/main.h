@@ -42,6 +42,7 @@
 #include "subsystems/drivetrain.hpp"
 #include "subsystems/intake.hpp"
 #include "subsystems/arm.hpp"
+#include "subsystems/stick.hpp"
 #include "subsystems/primary.hpp"
 
 // Motion
@@ -52,7 +53,6 @@
 #include "motion/joystickThrottling.hpp"
 
 #include "autonomous.hpp"
-
 
 
 /**

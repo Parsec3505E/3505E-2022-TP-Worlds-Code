@@ -18,7 +18,7 @@ Drivetrain::Drivetrain()
     leftFront->set_reversed(false);
     leftFront->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
-	leftBack = new pros::Motor(17);
+	leftBack = new pros::Motor(5);
     leftBack->set_reversed(false);
     leftBack->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 

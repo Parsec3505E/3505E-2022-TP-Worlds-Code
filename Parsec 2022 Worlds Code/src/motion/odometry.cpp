@@ -1,8 +1,8 @@
 #include "main.h"
 
-Drivetrain drivetrain = Drivetrain();
+//Drivetrain drivetrain = Drivetrain();
 
-const double PI = 3.14159265358979323846;
+//const double PI = 3.14159265358979323846;
 
 //Radius of tracking wheels in inches
 double WHEEL_RADIUS = 2.75;
@@ -59,12 +59,11 @@ double deltaYGlobal = 0;
 double xPoseGlobal = X_START;
 double yPoseGlobal = Y_START;
 
-int poseTracking(){
-
+int poseTracking(Drivetrain* drivetrain){
     while(true){
-        rEncoderPose = drivetrain.getRightEncoderRaw();
-        lEncoderPose = drivetrain.getLeftEncoderRaw();
-        bEncoderPose = drivetrain.getBackEncoderRaw();
+        rEncoderPose = drivetrain->getRightEncoderRaw();
+        lEncoderPose = drivetrain->getLeftEncoderRaw();
+        bEncoderPose = drivetrain->getBackEncoderRaw();
 
         deltaDistL = ((lEncoderPose - lPrevPose) * PI / 180) * WHEEL_RADIUS;
         deltaDistR = ((rEncoderPose - rPrevPose) * PI / 180) * WHEEL_RADIUS;
@@ -105,7 +104,7 @@ int poseTracking(){
         xPoseGlobal += deltaXGlobal;
         yPoseGlobal += deltaYGlobal;
 
-        pros::delay(10);
+        pros::delay(20);
 
     }
 

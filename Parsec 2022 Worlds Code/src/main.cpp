@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 // pros::task_t odometry = (pros::task_t)NULL;
 // pros::task_t chassisControl = (pros::task_t)NULL;
 
@@ -80,18 +79,22 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+	Drivetrain drive = Drivetrain();
+	drive.resetEncoders();
+	odomDriveTo(70.3, 70.3, 0);
+	int a = odomChassisControl(drive);
 
-// chassisControl = pros::Task(chassis_control);
+
+	
 // odometry = pros::Task(poseTracking);
 
 // highNeutralWinPoint();
 
-pros::Task task(PIDControl);
+//pros::Task task(PIDControl);
 
-highNeutralWinPoint();
+//highNeutralWinPoint();
 
 }
-
 
 void opcontrol(){
 	// Subsystems
@@ -99,10 +102,24 @@ void opcontrol(){
 	Intake intake = Intake();
 	Arm arm = Arm();
 	Primary primary_mogo = Primary();
+	Stick stick = Stick();
 
-
+	//initial var declarations
+	int clamp_state = 0;
+	int	pto_state = 0;
 	pros::Controller driver(pros::E_CONTROLLER_MASTER);
-	pros::Controller toolop(pros::E_CONTROLLER_PARTNER);
+	pros::Controller partner(pros::E_CONTROLLER_PARTNER);
+	stick.setHold();
+	arm.setCoast();
+
+	while(true)
+	{
+		drive.resetEncoders();
+		//pros::Task odomTracking(locationTracking, &drive, TASK_PRIORITY_DEFAULT,
+                //TASK_STACK_DEPTH_DEFAULT, "My Task");
+		//odomDriveTo(70.3, 70.3, 0);
+		//int a = odomChassisControl(drive);
+	}
 
 	// ###########################################################################
 
@@ -129,8 +146,76 @@ void opcontrol(){
 		int right = power - turn;
 		int left = power + turn;
 
-		drive.runRightDriveVelocity(right);
-		drive.runLeftDriveVelocity(left);
+		drive.runRightDrive(right);
+		drive.runLeftDrive(left);
+
+		//Arm Control
+		if (partner.get_digital(DIGITAL_R2)) {
+			arm.runArmVelocity(90);
+		}
+		else if (partner.get_digital(DIGITAL_R1)) {
+			arm.runArmVelocity(-90);
+		}
+		else {
+			arm.runArm(0);
+		}
+
+		//Clamp Control
+		bool piston_button = partner.get_digital_new_press(DIGITAL_B);
+		if(piston_button && clamp_state % 2 == 0) {
+			primary_mogo.triggerMogoClamp(true);
+			clamp_state++;
+		}
+		else if(piston_button && clamp_state % 2 != 0) {
+			primary_mogo.triggerMogoClamp(false);
+			clamp_state++;
+		}
+
+		//Intake/Outtake Control
+		if (driver.get_digital(DIGITAL_R2)) {
+			intake.intake(90);
+		}
+		else if (driver.get_digital(DIGITAL_R1)) {
+			intake.outtake(90);
+		}
+		else {
+			intake.stop();
+		}
+
+		//Spinner Control
+		if (driver.get_digital(DIGITAL_L2) || partner.get_digital(DIGITAL_A)) {
+			primary_mogo.spin(100);
+		}
+		else if (driver.get_digital(DIGITAL_L1) || partner.get_digital(DIGITAL_Y)) {
+			primary_mogo.spin(-100);
+		}
+		else {
+			primary_mogo.stop();
+		}
+
+		//Stick Control
+		if (partner.get_digital(DIGITAL_L1)) {
+			stick.runStickVelocity(-10);
+		}
+		else if (partner.get_digital(DIGITAL_L2)) {
+			stick.runStickVelocity(10);
+		}
+		else {
+			stick.stop();
+		}
+
+		//PTO Control
+		bool pto_button = partner.get_digital_new_press(DIGITAL_X);
+		if(pto_button && pto_state % 2 == 0) {
+			intake.triggerPTOLock(true);
+			pto_state++;
+		}
+		else if(pto_button && pto_state % 2 != 0) {
+			intake.triggerPTOLock(false);
+			pto_state++;
+		}
+
+		
 
 		pros::delay(20);
 	}

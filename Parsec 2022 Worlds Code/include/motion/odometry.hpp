@@ -3,8 +3,6 @@
 
 #include "main.h"
 
-Drivetrain drivetrain;
-
 extern const double PI;
 
 extern double heading;
@@ -12,6 +10,6 @@ extern double heading;
 extern double xPoseGlobal;
 extern double yPoseGlobal;
 
-int poseTracking();
+int poseTracking(Drivetrain* drivetrain);
 
 #endif
