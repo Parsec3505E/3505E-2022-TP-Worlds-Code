@@ -80,15 +80,7 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
-
-	
-// odometry = pros::Task(poseTracking);
-
-// highNeutralWinPoint();
-
-//pros::Task task(PIDControl);
-
-//highNeutralWinPoint();
+	highNeutralWinPoint();
 
 }
 
@@ -106,66 +98,8 @@ void opcontrol(){
 	int	pto_state = 0;
 	pros::Controller driver(pros::E_CONTROLLER_MASTER);
 	pros::Controller partner(pros::E_CONTROLLER_PARTNER);
-	stick.setBrake();
+	stick.setHold();
 	arm.setCoast();
-
-	//Auton program
-	
-	drive.resetEncoders();
-	drive_arg* track_task_arg = new drive_arg;
-	track_task_arg->drivetrain = drive;
-	pros::Task odomTracking(poseTracking, track_task_arg);
-	/*
-	while(true)
-	{
-		//driver.print(2,2,"%.2f %.2f\n", drive.getLeftEncoderInches(), drive.getRightEncoderInches());
-		
-		drive_arg* track_task_arg = new drive_arg;
-		track_task_arg->drivetrain = drive;
-		pros::Task odomTracking(poseTracking, track_task_arg);
-		pros::delay(10000000);
-		//pros::Task chassisControl(odomChassisControl, track_task_arg);
-		//drivePowerFactor = 1;
-		//odomDriveTo(70.3, 70.3);
-		
-		while(drive.getRightVelocity() != 0)
-		{	
-			pros::delay(100);
-		}
-		
-		
-		intake.resetEncoder();
-		//Change the value for intake movement
-		while(intake.getEncoderRaw() < 300)
-		{
-			drive.runRightDriveVelocity(-100);
-			drive.runLeftDriveVelocity(-100);			
-			//Change direction or whatever
-			intake.intake(30);
-		}
-		//Change VALUE 100 IN WHILE BELOW
-		while(drive.getEncoderInchesAverage() < 100)
-		{
-			drive.runRightDriveVelocity(-100);
-			drive.runLeftDriveVelocity(-100);
-		}
-		drive.stop();
-		
-		//driver.print(2,2,"%.2f %.2f", xPoseGlobal, yPoseGlobal);
-		//printf("%d %d", drive.getLeftEncoderRaw(), drive.getRightEncoderRaw());
-		
-		drivePowerFactor = 3;
-		odomDriveTo(70.3, 70.3);
-		while(drive.getRightVelocity() != 0)
-		{
-			
-			pros::delay(100);
-		}
-		
-		//Change Angle
-		//odomTurnTo(120 * (PI/180));
-	}
-	*/
 	
 	// ###########################################################################
 
@@ -241,10 +175,10 @@ void opcontrol(){
 
 		//Stick Control
 		if (partner.get_digital(DIGITAL_L1)) {
-			stick.runStickVelocity(-10);
+			stick.runStick(-20);
 		}
 		else if (partner.get_digital(DIGITAL_L2)) {
-			stick.runStickVelocity(10);
+			stick.runStick(20);
 		}
 		else {
 			stick.stop();

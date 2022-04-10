@@ -5,10 +5,9 @@
 
 class Intake{
 
-    pros::Motor* intakeMotor;
-    pros::ADIDigitalOut* ptoLock;
-
     public:
+        pros::ADIDigitalOut* ptoLock;
+        pros::Motor* intakeMotor;
         Intake();
 
         // MOTOR METHODS
@@ -29,6 +28,9 @@ class Intake{
         int getEncoderRaw();
 
         void resetEncoder();
+
+        //AUTON METHODS
+        void moveFor(void* arg);
 
 };
 

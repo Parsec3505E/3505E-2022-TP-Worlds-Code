@@ -78,6 +78,15 @@ void poseTracking(void* arg){
 
         heading += deltaHeading;
 
+        if(heading >= 2 * PI)
+        {
+            heading -= 2 * PI;
+        }
+        else if (heading <= -2 * PI)
+        {
+            heading += 2 * PI;
+        }
+
         if(deltaHeading == 0 ){
             deltaXLocal = deltaDistB;
             deltaYLocal = (deltaDistL + deltaDistR)/2;

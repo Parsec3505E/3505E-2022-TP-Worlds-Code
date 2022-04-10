@@ -5,9 +5,8 @@
 
 class Arm{
 
-    pros::Motor* armMotor;
-
     public:
+        pros::Motor* armMotor;
         Arm();
 
         // MOTOR METHODS

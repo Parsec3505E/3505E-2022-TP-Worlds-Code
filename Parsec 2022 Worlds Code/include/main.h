@@ -36,6 +36,8 @@
 
 #include "api.h"
 
+#include "time.h"
+
 
 // Subsystem #includes
 
@@ -49,16 +51,11 @@
 
 #include "motion/odometry.hpp"
 #include "motion/chassis_control.hpp"
+#include "motion/subsystem_control.hpp"
 
 #include "motion/joystickThrottling.hpp"
 
 #include "autonomous.hpp"
-
-
-//Structs for tasks
-typedef struct{
-	Drivetrain drivetrain;
-} drive_arg;
 
 /**
  * You should add more #includes here

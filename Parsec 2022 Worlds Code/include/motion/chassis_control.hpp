@@ -3,6 +3,8 @@
 
 #include "motion/odometry.hpp"
 
+extern bool runChassisControl;
+extern bool runPIDChassisControl;
 
 extern double xTargetLocation;
 extern double yTargetLocation;
@@ -10,8 +12,8 @@ extern double targetFacingAngle;
 
 extern double drivePowerFactor;
 
-extern void odomDriveTo(double xTarget, double yTarget);
-extern void odomTurnTo(double targetAngle);
+extern void odomDriveTo(double xTarget, double yTarget, double targetAngle);
+extern void odomTurnTo(double xTarget, double yTarget);
 extern double odomTurnToPoint();
 void setDrivePower(double theta);
 void odomDrivePID();
@@ -25,7 +27,13 @@ extern void turnToPID();
 void drivePID(Drivetrain drivetrain);
 void turnPID();
 
-int PIDControl(Drivetrain drivetrain);
+void PIDControl(void* arg);
 
+void driveSeconds(Drivetrain drivetrain, int seconds, int vel);
+
+//Structs for tasks
+typedef struct{
+	Drivetrain drivetrain;
+} drive_arg;
 
 #endif

@@ -5,9 +5,8 @@
 
 class Stick{
 
-    pros::Motor* stickMotor;
-
     public:
+        pros::Motor* stickMotor;
         Stick();
 
         // MOTOR METHODS

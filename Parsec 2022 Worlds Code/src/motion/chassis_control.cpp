@@ -2,6 +2,8 @@
 
 // ########################### USING ODOMETRY ###########################
 
+bool runChassisControl = false;
+
 double xTargetLocation = xPoseGlobal;
 double yTargetLocation = yPoseGlobal;
 double targetFacingAngle = 0;
@@ -18,7 +20,7 @@ double robotRelativeAngle = 0;
 double odomPrevError = 0;
 double odomMaxError = 0;
 
-double odomError = 0.1;
+double odomDriveError = 0.1;
 
 double odomIntegral = 0;
 double odomIntegralBound = 1.5;
@@ -51,27 +53,6 @@ double turnPIDPower = 0;
 
 //Decide whether drive or just turn odom command
 bool justTurn = false;
-
-void odomDriveTo(double xTarget, double yTarget)
-{
-  //Reset some PID variables
-  odomPrevError = 0;
-  odomIntegral = 0;
-
-  xTargetLocation = xTarget;
-  yTargetLocation = yTarget;
-  justTurn = false;
-}
-
-void odomTurnTo(double targetAngle)
-{
-  //Reset some PID variables
-  turnIntegral = 0;
-  turnPrevError = 0;
-
-  targetFacingAngle = targetAngle;
-  justTurn = true;
-}
 
 double getAngleToTarget()
 {
@@ -107,16 +88,44 @@ double getDistToTarget(){
     return dist;
 }
 
+void odomDriveTo(double xTarget, double yTarget, double targetAngle)
+{
+  //Reset some PID variables
+  odomPrevError = 0;
+  odomIntegral = 0;
+  turnIntegral = 0;
+  turnPrevError = 0;
+
+  xTargetLocation = xTarget;
+  yTargetLocation = yTarget;
+  targetFacingAngle = targetAngle;
+  justTurn = false;
+  runChassisControl = true;
+}
+
+void odomTurnTo(double xTarget, double yTarget)
+{
+  //Reset some PID variables
+  turnIntegral = 0;
+  turnPrevError = 0;
+
+  xTargetLocation = xTarget;
+  yTargetLocation = yTarget;
+  targetFacingAngle = getAngleToTarget();
+  justTurn = true;
+  runChassisControl = true;
+}
+
 
 void odomDrivePID()
 {
     // Proportional
-    odomError = getDistToTarget();
+    odomDriveError = getDistToTarget();
   
     // Integral
-    if(fabs(odomError) < odomIntegralBound)
+    if(fabs(odomDriveError) < odomIntegralBound)
     {
-    odomIntegral += odomError;
+    odomIntegral += odomDriveError;
     }
     else
     {
@@ -124,11 +133,11 @@ void odomDrivePID()
     }
 
     // Derivative
-    odomDerivative = odomError - odomPrevError;
-    odomPrevError = odomError;
+    odomDerivative = odomDriveError - odomPrevError;
+    odomPrevError = odomDriveError;
 
     // Calculating the power coming out of the PID
-    odomPIDPower = (odomError * odomkP + odomIntegral * odomkI + odomDerivative * odomkD);
+    odomPIDPower = (odomDriveError * odomkP + odomIntegral * odomkI + odomDerivative * odomkD);
 
     /*
     //Limit power output to 127
@@ -142,7 +151,7 @@ void odomDrivePID()
     }
     */
 
-    if(fabs(odomError) < odomMaxError)
+    if(fabs(odomDriveError) < odomMaxError)
     {
       odomPIDPower = 0;
     }
@@ -150,13 +159,7 @@ void odomDrivePID()
 
 void odomTurnPID()
 {
-  if(justTurn == false)
-  {
-    turnError = getAngleToTarget();
-  }
-  else{
-    turnError = targetFacingAngle;
-  }
+  turnError = targetFacingAngle;
 
   //WHEN WILL turnError EVER BE NEGATIVE????
 
@@ -247,7 +250,6 @@ void odomChassisControl(void* arg)
       */
 
       // Get PID drive and turn powers
-      /*
       if(justTurn == false)
       {
         odomDrivePID();
@@ -255,14 +257,12 @@ void odomChassisControl(void* arg)
       else{
         odomPIDPower = 0;
       }
-      */
 
-      odomDrivePID();
       odomTurnPID();
       
 
-      odomRightSidePower = odomPIDPower;
-      odomLeftSidePower = odomPIDPower;
+      odomRightSidePower = odomPIDPower - turnPIDPower;
+      odomLeftSidePower = odomPIDPower + turnPIDPower;
 
       if(odomRightSidePower > 127)
       {
@@ -282,6 +282,11 @@ void odomChassisControl(void* arg)
         odomLeftSidePower = -127;
       }
 
+      if(fabs(odomDriveError) < odomMaxError && fabs(turnError) < turnMaxError)
+      {
+        runChassisControl = false;
+      }
+
       drive_temp.runRightDrive(odomRightSidePower);
       drive_temp.runLeftDrive(odomLeftSidePower); 
       printf("%d", (int)odomRightSidePower);
@@ -294,22 +299,26 @@ void odomChassisControl(void* arg)
 
 // ########################### ONLY USING PIDs ###########################
 
-
+bool runPIDChassisControl = false;
 
 double driveTarget = 0;
-
-void driveToPID(double inches)
-{
-  driveTarget = inches;
-}
-
 
 double driveError = 0;
 double drivePrevError = 0;
 
+double driveIntegral = 0;
+
+void driveToPID(double inches)
+{
+  drivePrevError = 0;
+  driveIntegral = 0;
+  driveTarget = inches;
+  runPIDChassisControl = true;
+}
+
 double driveMaxError = 0.1;
 
-double driveIntegral = 0;
+
 double driveIntegralBound = 1.5;
 
 double driveDerivative = 0;
@@ -317,8 +326,6 @@ double driveDerivative = 0;
 double drivekP = 3;
 double drivekI = 0;
 double drivekD = 0;
-
-
 
 void drivePID(Drivetrain drivetrain){
 
@@ -341,10 +348,14 @@ void drivePID(Drivetrain drivetrain){
     // Calculating the power coming out of the PID
     drivePIDPower = (driveError * drivekP + driveIntegral * drivekI + driveDerivative * drivekD);
 
-    //Limit power output to 12V
-    if(drivePIDPower > 12)
+    //Limit power output to 127
+    if(drivePIDPower > 127)
     {
-    drivePIDPower = 12;
+      drivePIDPower = 127;
+    }
+    else if(drivePIDPower < -127)
+    {
+      drivePIDPower = -127;
     }
 
     if(fabs(driveError) < driveMaxError)
@@ -358,20 +369,33 @@ double rightSidePower = 0;
 double leftSidePower =0;
 
 
-int PIDControl(Drivetrain drivetrain)
+void PIDControl(void* arg)
 {
+  Drivetrain drive_temp = ((drive_arg*)arg)->drivetrain;
   while(true){
-    drivePID(drivetrain);
+    drivePID(drive_temp);
 
     rightSidePower = drivePIDPower - turnPIDPower;
     leftSidePower = drivePIDPower + turnPIDPower;
 
     
-    drivetrain.runRightDrive(rightSidePower);
-    drivetrain.runLeftDrive(leftSidePower); 
+    drive_temp.runRightDrive(rightSidePower);
+    drive_temp.runLeftDrive(leftSidePower); 
+    if(fabs(driveError) < driveMaxError)
+    {
+      runPIDChassisControl = false;
+    }
   }
-  
-
 }
 
+//MOVE FOR SECONDS
+void driveSeconds(Drivetrain drivetrain, int seconds, int vel)
+{
+  time_t timer = time(NULL);
+  while(time(NULL) - timer < seconds)
+  {
+    drivetrain.runRightDrive(vel);
+    drivetrain.runRightDrive(vel);
+  }
+}
 
