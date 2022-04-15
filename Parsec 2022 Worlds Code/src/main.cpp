@@ -86,6 +86,7 @@ void autonomous() {
 
 
 void opcontrol(){
+	//highNeutralWinPoint();
 	// Subsystems
 	Drivetrain drive = Drivetrain();
 	Intake intake = Intake();
@@ -93,9 +94,20 @@ void opcontrol(){
 	Primary primary_mogo = Primary();
 	Stick stick = Stick();
 
+	intake.stop();
+	intake.resetEncoder();
+
+	arm.stop();
+	arm.resetEncoder();
+	
+	stick.stop();
+	stick.resetEncoder();
+
 	//initial var declarations
 	int clamp_state = 0;
 	int	pto_state = 0;
+	bool intake_state = false;
+
 	pros::Controller driver(pros::E_CONTROLLER_MASTER);
 	pros::Controller partner(pros::E_CONTROLLER_PARTNER);
 	stick.setHold();
@@ -137,7 +149,7 @@ void opcontrol(){
 			arm.runArmVelocity(-90);
 		}
 		else {
-			arm.runArm(0);
+			arm.stop();
 		}
 
 		//Clamp Control
@@ -152,14 +164,33 @@ void opcontrol(){
 		}
 
 		//Intake/Outtake Control
-		if (driver.get_digital(DIGITAL_R2)) {
-			intake.intake(120);
+		if(partner.get_digital_new_press(DIGITAL_UP) && intake_state)
+		{
+			intake.intake(100);
+			intake_state = true;
+		}
+		else if(partner.get_digital_new_press(DIGITAL_DOWN) && intake_state)
+		{
+			intake.outtake(100);
+			intake_state = true;
+		}
+		else if(partner.get_digital_new_press(DIGITAL_LEFT))
+		{
+			intake.stop();
+			intake_state = true;
+		}
+		else if (driver.get_digital(DIGITAL_R2)) {
+			intake.intake(127);
+			intake_state = false;
 		}
 		else if (driver.get_digital(DIGITAL_R1)) {
-			intake.outtake(120);
+			intake.outtake(127);
+			intake_state = false;
 		}
-		else {
+		else if(intake_state == false)
+		{
 			intake.stop();
+			intake_state = true;
 		}
 
 		//Spinner Control

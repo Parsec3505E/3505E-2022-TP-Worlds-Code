@@ -7,7 +7,7 @@ Stick::Stick()
     stickMotor = new pros::Motor(7);
     stickMotor->set_reversed(true);
     stickMotor->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-
+    stickMotor->set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
 }
 
 void Stick::stop()
@@ -48,7 +48,7 @@ double Stick::getStickVelocity()
    return (double)stickMotor->get_actual_velocity();
 }
 
-int Stick::getEncoderRaw()
+double Stick::getEncoderRaw()
 {
     return stickMotor->get_position();
 }

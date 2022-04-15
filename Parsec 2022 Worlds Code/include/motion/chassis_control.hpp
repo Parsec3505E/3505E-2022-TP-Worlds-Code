@@ -13,8 +13,10 @@ extern double targetFacingAngle;
 extern double drivePowerFactor;
 
 extern void odomDriveTo(double xTarget, double yTarget, double targetAngle);
-extern void odomTurnTo(double xTarget, double yTarget);
-extern double odomTurnToPoint();
+extern void odomTurnToPos(double xTarget, double yTarget);
+extern double getAngleToTarget();
+extern void odomTurnToHeading(double heading);
+//extern double odomTurnToPoint();
 void setDrivePower(double theta);
 void odomDrivePID();
 void odomTurnPID();
@@ -29,7 +31,7 @@ void turnPID();
 
 void PIDControl(void* arg);
 
-void driveSeconds(Drivetrain drivetrain, int seconds, int vel);
+void driveSeconds(Drivetrain drivetrain, int ms, int vel);
 
 //Structs for tasks
 typedef struct{

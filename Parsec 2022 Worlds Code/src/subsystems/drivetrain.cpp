@@ -10,7 +10,7 @@ Drivetrain::Drivetrain()
     rightFront->set_reversed(true);
     rightFront->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
-    rightBack = new pros::Motor(6);
+    rightBack = new pros::Motor(8);
     rightBack->set_reversed(true);
     rightBack->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
@@ -23,9 +23,9 @@ Drivetrain::Drivetrain()
     leftBack->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
     // Encoder Objects
-    rightEncoder = new pros::ADIEncoder({{13, 'A', 'B'}});
-    leftEncoder = new pros::ADIEncoder({{13, 'C', 'D'}});
-    backEncoder = new pros::ADIEncoder({{13, 'E', 'F'}});
+    rightEncoder = new pros::ADIEncoder({{13, 'a', 'b'}});
+    leftEncoder = new pros::ADIEncoder({{13, 'c', 'd'}});
+    backEncoder = new pros::ADIEncoder({{13, 'e', 'f'}});
 
     // rightEncoder = pros::c::ext_adi_encoder_init(13, 'A', 'B', true);
     // leftEncoder = pros::c::ext_adi_encoder_init(13, 'C', 'D', false);
@@ -93,12 +93,12 @@ void Drivetrain::setHold()
 
 double Drivetrain::getRightVelocity()
 {
-   return (double)(rightFront->get_actual_velocity() + rightBack->get_actual_velocity()) / 2;
+   return (double)(rightFront->get_actual_velocity() + rightBack->get_actual_velocity()) / 2.0;
 }
 
 double Drivetrain::getLeftVelocity()
 {
-   return (double)(leftFront->get_actual_velocity() + leftBack->get_actual_velocity()) / 2;
+   return (double)(leftFront->get_actual_velocity() + leftBack->get_actual_velocity()) / 2.0;
 }
 
 int Drivetrain::getRightEncoderRaw()
@@ -118,7 +118,7 @@ int Drivetrain::getBackEncoderRaw()
 
 int Drivetrain::getAverageEncorderRaw()
 {
-    return (getRightEncoderRaw() + getLeftEncoderRaw()) / 2;
+    return (getRightEncoderRaw() + getLeftEncoderRaw()) / 2.0;
 }
 
 double Drivetrain::getRightEncoderInches()
@@ -138,19 +138,28 @@ double Drivetrain::getLeftEncoderInches()
 
 double Drivetrain::getEncoderInchesAverage()
 {
-    return (getRightEncoderInches() + getLeftEncoderInches()) / 2;
+    return (getRightEncoderInches() + getLeftEncoderInches()) / 2.0;
 }
 
 void Drivetrain::resetEncoders()
 {
-    rightEncoder->reset();
-    leftEncoder->reset();
-    backEncoder->reset();
+    pros::delay(100);
+    while(getEncoderInchesAverage() > 10 || getEncoderInchesAverage() < -10)
+    {
+        rightEncoder->reset();
+        leftEncoder->reset();
+        backEncoder->reset();
+        pros::delay(100);
+    }
+    rightFront->tare_position();
+    rightBack->tare_position();
+    leftFront->tare_position();
+    leftBack->tare_position();
 }
 
 double Drivetrain::ticksToInches(int ticks)
 {
-    return (double)(ticks * (2.75*PI)/360);
+    return (((double)ticks) * (2.75*PI)/360.0);
 }
 
 // int Drivetrain::getDistance()

@@ -7,6 +7,7 @@ Arm::Arm()
     armMotor = new pros::Motor(2);
     armMotor->set_reversed(true);
     armMotor->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    armMotor->set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
 
 }
 
@@ -48,7 +49,7 @@ double Arm::getArmVelocity()
    return (double)armMotor->get_actual_velocity();
 }
 
-int Arm::getEncoderRaw()
+double Arm::getEncoderRaw()
 {
     return armMotor->get_position();
 }

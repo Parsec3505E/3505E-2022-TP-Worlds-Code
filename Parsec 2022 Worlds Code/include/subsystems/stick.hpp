@@ -24,7 +24,7 @@ class Stick{
 
 
         // ENCODER METHODS
-        int getEncoderRaw();
+        double getEncoderRaw();
 
         void resetEncoder();
 
