@@ -1,12 +1,14 @@
 #include "main.h"
 
 int intakeTicksToMove = 0;
+bool moveIntake = true;
 int intakeVelToMove = 0;
 
 double armTicksToMove = 0.0;
 int armVelToMove = 0;
 
 double stickTicksToMove = 0.0;
+bool moveStick = true;
 int stickVelToMove = 0;
 
 void setTargetIntake(int ticks, int vel)
@@ -32,7 +34,10 @@ void moveIntakeFor(void* arg)
     Intake intake = ((intake_arg*)arg)->intake;
     while(true)
     {
-        intake.intakeMotor->move_absolute(intakeTicksToMove, intakeVelToMove);
+        if(moveIntake)
+        {
+            intake.intakeMotor->move_absolute(intakeTicksToMove, intakeVelToMove);
+        }
     }
 }
 
@@ -50,6 +55,9 @@ void moveStickFor(void* arg)
     Stick stick = ((stick_arg*)arg)->stick;
     while(true)
     {
-        stick.stickMotor->move_absolute(stickTicksToMove, stickVelToMove);
+        if(moveIntake)
+        {
+            stick.stickMotor->move_absolute(stickTicksToMove, stickVelToMove);
+        }
     }
 }

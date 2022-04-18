@@ -4,12 +4,14 @@
 #include "main.h"
 
 extern int intakeTicksToMove;
+extern bool moveIntake;
 extern int intakeVelToMove;
 
 extern double armTicksToMove;
 extern int armVelToMove;
 
 extern double stickTicksToMove;
+extern bool moveStick = true;
 extern int stickVelToMove;
 
 void setTargetIntake(int ticks, int vel);

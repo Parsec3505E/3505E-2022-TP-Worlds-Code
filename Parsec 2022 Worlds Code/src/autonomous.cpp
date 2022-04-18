@@ -39,17 +39,45 @@ void skills()
     runChassisControl = true;
     runOdomTracking = true;
 
+    double curEncoderValue = 0.0;
+
 
     //odomDriveTo(x, y, speed, turn);
     //odomTurnToHeading(angle to turn to);
     //odomTurnToPos(x, y);
-    setTargetIntake(-15000, 100);
+    
+    moveIntake = true;
+    moveStick = true;
+    setTargetIntake(-80000, 100);
+    pros::delay(1000);
     odomDriveTo(130.0, 70.3, 50.0, 0.0);
-    while(runChassisControl)
+    runChassisControl = false; 
+    
+    for(int i = 0; i < 3; i++)
     {
-        pros::delay(1);
+        curEncoderValue = drive.getEncoderInchesAverage();
+        while(drive.getEncoderInchesAverage() < curEncoderValue + 10.0)
+        {
+            drive.runLeftDrive(63);
+            drive.runRightDrive(63);
+        }
+        pros::delay(1000);
+        curEncoderValue = drive.getEncoderInchesAverage();
+        while(drive.getEncoderInchesAverage() > curEncoderValue - 5.0)
+        {
+            drive.runLeftDrive(-63);
+            drive.runRightDrive(-63);
+        }
+        pros::delay(1000);
+
+        setTargetStick(30, 30)
     }
     drive.stop();
+    moveIntake = false;
+    intake.stop();
+    moveStick = false;
+    stick.stop();
+
 }
 
 
