@@ -57,15 +57,17 @@ bool justTurn = false;
 double getAngleToTarget()
 {
 
-  targetFacingAngle = atan2(xTargetLocation - xPoseGlobal, yTargetLocation - yPoseGlobal);
+  double angle = atan2(yTargetLocation - yPoseGlobal, xTargetLocation - xPoseGlobal);
 
-  if(targetFacingAngle < 0)
+  /*
+  while(angle < 0)
   {
-    targetFacingAngle += 2 * PI;
+    angle += 2 * PI;
   }
+  */
 
-  double angle = targetFacingAngle - heading;
-
+  angle = (PI/2.0) - angle - heading;
+  /*
   if(angle >= 2 * PI)
   {
     angle -= 2 * PI;
@@ -78,6 +80,7 @@ double getAngleToTarget()
   {
     angle += 2 * PI;
   }
+  */
 
   //double angle = fmod((targetFacingAngle - heading + (3 * PI)), (2 * PI) - PI);
   return angle;
@@ -88,7 +91,7 @@ double getDistToTarget(){
     return dist;
 }
 
-void odomDriveTo(double xTarget, double yTarget, double targetAngle)
+void odomDriveTo(double xTarget, double yTarget)
 {
   //Reset some PID variables
   odomPrevError = 0.0;
@@ -98,7 +101,6 @@ void odomDriveTo(double xTarget, double yTarget, double targetAngle)
 
   xTargetLocation = xTarget;
   yTargetLocation = yTarget;
-  targetFacingAngle = targetAngle;
   justTurn = false;
   runChassisControl = true;
 }
@@ -108,7 +110,6 @@ void odomTurnToPos(double xTarget, double yTarget)
   //Reset some PID variables
   turnIntegral = 0.0;
   turnPrevError = 0.0;
-
   xTargetLocation = xTarget;
   yTargetLocation = yTarget;
   targetFacingAngle = getAngleToTarget();
@@ -221,8 +222,38 @@ double odomLeftSidePower = 0.0;
 // The output power of the PID to the motors
 double drivePIDPower = 0.0;
 
-//  Adjust Motor Power Manually
-double drivePowerFactor = 1;
+//Wheel Offset of actual powered wheels
+double wheelOffset = 7.5;
+
+//Drive Target Speed
+double driveTargetSpeed = 0.0;
+
+//Turn Factor for DriveToPoint()
+double driveTurnFactor = 0.0;
+
+void odomDriveTo(double xTarget, double yTarget, double speed, double turnFactor)
+{
+  /*
+  //Reset some PID variables
+  odomPrevError = 0.0;
+  odomIntegral = 0.0;
+  turnIntegral = 0.0;
+  turnPrevError = 0.0;
+  */
+  driveTargetSpeed = speed;
+  driveTurnFactor = turnFactor;
+
+  xTargetLocation = xTarget;
+  yTargetLocation = yTarget;
+  justTurn = false;
+  runChassisControl = true;
+}
+
+double driveToPointPower()
+{
+  return (2.0/getDistToTarget()) * driveTargetSpeed * wheelOffset * cos((PI/2.0) - getAngleToTarget());
+}
+
 
 void odomChassisControl(void* arg)
 {
@@ -261,21 +292,17 @@ void odomChassisControl(void* arg)
           robotRelativeAngle += 2 * PI;
         }
         */
-
-        // Get PID drive and turn powers
-        if(justTurn == false)
+        
+        if(justTurn == true)
         {
-          odomDrivePID();
+          odomTurnPID();
+          odomRightSidePower = -turnPIDPower;
+          odomLeftSidePower = turnPIDPower;
         }
         else{
-          odomPIDPower = 0.0;
+          odomRightSidePower = driveTargetSpeed - (driveTurnFactor * driveToPointPower());
+          odomLeftSidePower = driveTargetSpeed + (driveTurnFactor * driveToPointPower());
         }
-
-        odomTurnPID();
-        
-
-        odomRightSidePower = odomPIDPower - turnPIDPower;
-        odomLeftSidePower = odomPIDPower + turnPIDPower;
 
         if(odomRightSidePower > 127)
         {
@@ -295,14 +322,15 @@ void odomChassisControl(void* arg)
           odomLeftSidePower = -127;
         }
 
-        if(fabs(odomDriveError) < odomMaxError && fabs(turnError) < turnMaxError)
+        if(getDistToTarget() < odomMaxError && fabs(turnError) < turnMaxError)
         {
           runChassisControl = false;
         }
 
         drive_temp.runRightDrive(odomRightSidePower);
         drive_temp.runLeftDrive(odomLeftSidePower); 
-        //driver.print(2,2,"%.1f %.1f", targetFacingAngle, xPoseGlobal);
+        //driver.print(2,2,"%.1f", (atan2(yTargetLocation - yPoseGlobal, xTargetLocation - xPoseGlobal)) * (180.0/PI));
+        driver.print(2,2,"%.1f, %.1f", xPoseGlobal, yPoseGlobal);
         }
       pros::delay(10);
     }

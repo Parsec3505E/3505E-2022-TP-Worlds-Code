@@ -3,51 +3,94 @@
 const double TALL_NEUTRAL_X = 70.3;
 const double TALL_NEUTRAL_Y = 70.3;
 
-
 const double RIGHT_ALLIANCE_X = 0;
 const double LEFT_ALLIANCE_Y = 0;
+
+intake_arg* intake_task_arg = new intake_arg;
+pros::Task intakeTask(moveIntakeFor, intake_task_arg);
+
+arm_arg* arm_task_arg = new arm_arg;
+pros::Task armTask(moveArmFor, arm_task_arg);
+
+stick_arg* stick_task_arg = new stick_arg;
+pros::Task stickTask(moveStickFor, stick_task_arg);
+
+drive_arg* track_task_arg = new drive_arg;
+pros::Task odomTracking(poseTracking, track_task_arg);
+pros::Task chassisControl(odomChassisControl, track_task_arg);
+
+
+
+
+void skills()
+{
+    Intake intake = Intake();
+    Drivetrain drive = Drivetrain();
+    Arm arm = Arm();
+    Stick stick = Stick();
+    track_task_arg->drivetrain = drive;
+    intake.resetEncoder();
+    arm.resetEncoder();
+    stick.resetEncoder();
+    intake_task_arg->intake = intake;
+    arm_task_arg->arm = arm;
+    stick_task_arg->stick = stick;
+    drive.resetEncoders();
+    runChassisControl = true;
+    runOdomTracking = true;
+
+    odomDriveTo(70.3, 70.3, 100.0, 10.0);
+    while(runChassisControl)
+    {
+        pros::delay(1);
+    }
+    drive.stop();
+}
+
+
+void endAllTasks()
+{
+    stickTask.suspend();
+    intakeTask.suspend();
+    armTask.suspend();
+    odomTracking.suspend();
+    chassisControl.suspend();
+}
+
+
+void odomPrint()
+{
+    Drivetrain drive = Drivetrain(); 
+    track_task_arg->drivetrain = drive;
+
+    drive.resetEncoders();
+    resetTracking();
+    runOdomTracking = true;
+}
 
 
 void highNeutralWinPoint()
 {
-    
     //Set-up initial heading (change 9 to the offset of stand-off from center of robot)
     //heading = 360 + atan2(TALL_NEUTRAL_Y + 9 - yPoseGlobal, TALL_NEUTRAL_X - xPoseGlobal);
     pros::Controller driver(pros::E_CONTROLLER_MASTER);
 
-    Drivetrain drive = Drivetrain();
     Intake intake = Intake();
+    Drivetrain drive = Drivetrain();
     Arm arm = Arm();
     Stick stick = Stick();
 
-    //Reset Encoders
-    drive.resetEncoders();
-    
+    //Reset Encoders (drive resetted later)
     intake.resetEncoder();
     arm.resetEncoder();
     stick.resetEncoder();
 
-    double curEncoderValue = 0;
-
-    //drive_arg* track_task_arg = new drive_arg;  
-    //track_task_arg->drivetrain = drive;
-
-    intake_arg* intake_task_arg = new intake_arg;
     intake_task_arg->intake = intake;
-
-    arm_arg* arm_task_arg = new arm_arg;
     arm_task_arg->arm = arm;
-
-    stick_arg* stick_task_arg = new stick_arg;
     stick_task_arg->stick = stick;
-    
-    //pros::Task odomTracking(poseTracking, track_task_arg);
-    //pros::Task chassisControl(odomChassisControl, track_task_arg);
-    //runChassisControl = false;
+    track_task_arg->drivetrain = drive;
 
-    pros::Task intakeTask(moveIntakeFor, intake_task_arg);
-    pros::Task armTask(moveArmFor, arm_task_arg);
-    pros::Task stickTask(moveStickFor, stick_task_arg);
+    double curEncoderValue = 0;
     stick.setHold();
     
     //Change Numbers
@@ -87,7 +130,7 @@ void highNeutralWinPoint()
     }
     drive.stop();
     
-    /*
+    /* ODOM ATTEMP (DONT USE)
     double xTemp = xPoseGlobal;
     double yTemp = yPoseGlobal;
     double headingTemp = heading;
@@ -166,59 +209,44 @@ void highNeutralWinPoint()
         pros::delay(10);
     }
     setTargetStick(-115.2, 20);
-    pros::delay(1500);
+    pros::delay(2000);
 
+    /* NON ODOM TURN (INCONSISTENT)
     drive.resetEncoders();
     curEncoderValue = drive.getEncoderInchesAverage();
-    while(drive.getEncoderInchesAverage() > curEncoderValue - 6)
+    setTargetIntake(1500, 100);
+    while(drive.getEncoderInchesAverage() > curEncoderValue - 3.0)
     {
         drive.runLeftDrive(40);
         drive.runRightDrive(-100);
     }
     drive.stop();
+    */
+
+    //ODOM USED HERE  
+    drive.resetEncoders();
+    resetTracking();
+    runChassisControl = false;
+    runOdomTracking = true;
+    
+    odomTurnToHeading(70.0 * (PI/180.0));
+    while(runChassisControl)
+    {
+        pros::delay(5);
+    }
+    odomTracking.suspend();
+    chassisControl.suspend();
     curEncoderValue = drive.getEncoderInchesAverage();
+    setTargetIntake(1000, 100);
     while(drive.getEncoderInchesAverage() > curEncoderValue - 5.0)
     {
         drive.runLeftDrive(-100);
         drive.runRightDrive(-100);
     }  
     drive.stop();
-    setTargetIntake(1000, 100);
     intakeTask.suspend();
     stickTask.suspend();
     armTask.suspend();
-    pros::delay(2000);
-    //odomTracking.suspend();
-    //chassisControl.suspend();
-    
-    
-    
-    
-
-
-    /*
-    while(drive.getLeftEncoderInches() - drive.getRightEncoderInches() < 4.5)
-    {
-        drive.runLeftDrive(100);
-        drive.runRightDrive(-30);
-    }
-    drive.stop();
-    */
     pros::delay(3000);
-    /*
-    setTargetIntake(1500, 100);
-    driveToPID(-27);
-    waitWhile(runPIDChassisControl);
-    pros::Task chassisControl(odomChassisControl, track_task_arg);
-    pros::Task PIDChassiControl(PIDControl, track_task_arg);
-    */
-    /*
-    odomDriveTo(140.7 - 9, 0 + 9, 0);
-    waitWhile(runChassisControl);
-    driveSeconds(drive, 1, 100);
-    odomDriveTo(129.2, 35 - 10, 0);
-    waitWhile(runChassisControl);
-    */
 
-    //KILL TASKS
 }

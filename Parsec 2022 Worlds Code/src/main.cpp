@@ -38,7 +38,9 @@ void initialize() {
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
-void disabled() {}
+void disabled() {
+	endAllTasks();
+}
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field
@@ -49,7 +51,8 @@ void disabled() {}
  * This task will exit when the robot is enabled and autonomous or opcontrol
  * starts.
  */
-void competition_initialize() {}
+void competition_initialize() {
+}
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -80,13 +83,17 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
-	highNeutralWinPoint();
+	//highNeutralWinPoint();
+
 
 }
 
 
 void opcontrol(){
 	//highNeutralWinPoint();
+	//odomPrint();
+	skills();
+	pros::delay(100000);
 	// Subsystems
 	Drivetrain drive = Drivetrain();
 	Intake intake = Intake();

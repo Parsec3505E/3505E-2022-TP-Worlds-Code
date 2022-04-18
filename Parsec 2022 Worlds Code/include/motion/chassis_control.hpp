@@ -12,12 +12,12 @@ extern double targetFacingAngle;
 
 extern double drivePowerFactor;
 
-extern void odomDriveTo(double xTarget, double yTarget, double targetAngle);
+extern void odomDriveTo(double xTarget, double yTarget, double speed, double turnFactor);
 extern void odomTurnToPos(double xTarget, double yTarget);
 extern double getAngleToTarget();
 extern void odomTurnToHeading(double heading);
 //extern double odomTurnToPoint();
-void setDrivePower(double theta);
+//void setDrivePower(double theta);
 void odomDrivePID();
 void odomTurnPID();
 
