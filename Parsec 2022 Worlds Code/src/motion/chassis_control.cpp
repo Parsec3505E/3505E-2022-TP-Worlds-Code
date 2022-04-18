@@ -18,7 +18,7 @@ double robotRelativeAngle = 0.0;
 // Drive PID variables/gains
 //double odomError = 0.0;
 double odomPrevError = 0.0;
-double odomMaxError = 0.2;
+double odomMaxError = 1.2;
 
 double odomDriveError = 0.1;
 
@@ -322,9 +322,13 @@ void odomChassisControl(void* arg)
           odomLeftSidePower = -127;
         }
 
-        if(getDistToTarget() < odomMaxError && fabs(turnError) < turnMaxError)
+        if(getDistToTarget() < odomMaxError && justTurn == false)
         {
           runChassisControl = false;
+        }
+        else if(fabs(turnError) < turnMaxError && justTurn == true)
+        {
+          runChassisControl = false; 
         }
 
         drive_temp.runRightDrive(odomRightSidePower);

@@ -93,6 +93,7 @@ void opcontrol(){
 	//highNeutralWinPoint();
 	//odomPrint();
 	skills();
+	endAllTasks();
 	pros::delay(100000);
 	// Subsystems
 	Drivetrain drive = Drivetrain();

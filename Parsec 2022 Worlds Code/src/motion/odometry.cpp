@@ -10,8 +10,8 @@ double WHEEL_DIAMETER = 2.75;
 //Starting angle (relative to field) (RADIANS)
 double THETA_START = 0.0;
 
-double X_START = 0.0; 
-double Y_START = 0.0;
+double X_START = 130.0; 
+double Y_START = 9.0;
 
 //Distances of tracking wheels from tracking center (INCHES)
 double rTrackRadius = 4.75;

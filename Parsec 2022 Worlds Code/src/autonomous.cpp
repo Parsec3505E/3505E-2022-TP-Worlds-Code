@@ -39,7 +39,12 @@ void skills()
     runChassisControl = true;
     runOdomTracking = true;
 
-    odomDriveTo(70.3, 70.3, 100.0, 10.0);
+
+    //odomDriveTo(x, y, speed, turn);
+    //odomTurnToHeading(angle to turn to);
+    //odomTurnToPos(x, y);
+    setTargetIntake(-15000, 100);
+    odomDriveTo(130.0, 70.3, 50.0, 0.0);
     while(runChassisControl)
     {
         pros::delay(1);
