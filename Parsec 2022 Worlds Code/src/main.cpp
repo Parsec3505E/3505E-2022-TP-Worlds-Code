@@ -39,7 +39,7 @@ void initialize() {
  * the robot is enabled, this task will exit.
  */
 void disabled() {
-	endAllTasks();
+	//endAllTasks();
 }
 
 /**
@@ -83,17 +83,19 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
-	//highNeutralWinPoint();
+	highNeutralWinPoint();
 
 
 }
 
 
 void opcontrol(){
+	try{
+		endAllTasks();
+	}
+	catch(...){}
 	//highNeutralWinPoint();
 	//odomPrint();
-	skills();
-	pros::delay(100000);
 	// Subsystems
 	Drivetrain drive = Drivetrain();
 	Intake intake = Intake();
@@ -173,12 +175,12 @@ void opcontrol(){
 		//Intake/Outtake Control
 		if(partner.get_digital_new_press(DIGITAL_UP) && intake_state)
 		{
-			intake.intake(100);
+			intake.intake(90);
 			intake_state = true;
 		}
 		else if(partner.get_digital_new_press(DIGITAL_DOWN) && intake_state)
 		{
-			intake.outtake(100);
+			intake.outtake(90);
 			intake_state = true;
 		}
 		else if(partner.get_digital_new_press(DIGITAL_LEFT))
@@ -213,10 +215,10 @@ void opcontrol(){
 
 		//Stick Control
 		if (partner.get_digital(DIGITAL_L1)) {
-			stick.runStick(-20);
+			stick.runStick(-30);
 		}
 		else if (partner.get_digital(DIGITAL_L2)) {
-			stick.runStick(20);
+			stick.runStick(30);
 		}
 		else {
 			stick.stop();

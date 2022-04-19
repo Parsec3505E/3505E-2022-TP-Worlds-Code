@@ -38,13 +38,14 @@ void skills()
     drive.resetEncoders();
     runChassisControl = true;
     runOdomTracking = true;
-
+    /*
     odomDriveTo(70.3, 70.3, 100.0, 10.0);
     while(runChassisControl)
     {
         pros::delay(1);
     }
     drive.stop();
+    */
 }
 
 
@@ -89,6 +90,7 @@ void highNeutralWinPoint()
     arm_task_arg->arm = arm;
     stick_task_arg->stick = stick;
     track_task_arg->drivetrain = drive;
+    runOdomTracking = false;
 
     double curEncoderValue = 0;
     stick.setHold();
@@ -96,6 +98,8 @@ void highNeutralWinPoint()
     //Change Numbers
     setTargetIntake(1000, 100);
     drive.resetEncoders();
+    runOdomTracking = true;
+    runChassisControl = false;
     while(drive.getEncoderInchesAverage() < 35.0)
     {
         drive.runLeftDrive(127);
@@ -105,6 +109,17 @@ void highNeutralWinPoint()
     drive.stop();
     setTargetIntake(1300, 100);
     pros::delay(600);
+    //Change Turn Factor
+    
+    odomDriveTo(106.0, 9.0, -127, 0.5, 0);
+    runChassisControl = true;
+    while(yPoseGlobal > 11.0)
+    {
+        pros::delay(5);
+    }
+    runChassisControl = false;
+    drive.stop();
+    /*
     curEncoderValue = drive.getEncoderInchesAverage();
     while(drive.getEncoderInchesAverage() > curEncoderValue - 40.0)
     {
@@ -112,6 +127,7 @@ void highNeutralWinPoint()
         drive.runRightDrive(-80);
     }
     drive.stop();
+    */
     setTargetIntake(900, 100);
     pros::delay(500);
     drive.runRightDrive(-100);
@@ -123,13 +139,13 @@ void highNeutralWinPoint()
     driveSeconds(drive, 250, 50);
     
     curEncoderValue = drive.getLeftEncoderInches();
-    while(drive.getLeftEncoderInches() < curEncoderValue + 3.5)
+    while(drive.getLeftEncoderInches() < curEncoderValue + 4.0)
     {
         drive.runLeftDrive(100);
         drive.runRightDrive(-100);
     }
     drive.stop();
-    
+
     /* ODOM ATTEMP (DONT USE)
     double xTemp = xPoseGlobal;
     double yTemp = yPoseGlobal;
@@ -208,7 +224,8 @@ void highNeutralWinPoint()
         //driver.print(2,2,"%.2f", arm.getEncoderRaw());
         pros::delay(10);
     }
-    setTargetStick(-115.2, 20);
+    // multiplied by 2 for torque cartirdge
+    setTargetStick(-115.2 * 2, 20);
     pros::delay(2000);
 
     /* NON ODOM TURN (INCONSISTENT)
