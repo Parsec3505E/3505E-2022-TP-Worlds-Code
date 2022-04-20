@@ -17,4 +17,6 @@ void endAllTasks();
 
 void highNeutralWinPoint();
 
+void leftSideAuton();
+
 #endif
