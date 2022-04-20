@@ -46,37 +46,62 @@ void skills()
     //odomTurnToHeading(angle to turn to);
     //odomTurnToPos(x, y);
     
+    //PICK BLUE ALLIANCE
     moveIntake = true;
-    moveStick = true;
-    setTargetIntake(-80000, 100);
-    pros::delay(1000);
-    odomDriveTo(130.0, 70.3, 50.0, 0.0);
-    runChassisControl = false; 
-    
-    for(int i = 0; i < 3; i++)
-    {
-        curEncoderValue = drive.getEncoderInchesAverage();
-        while(drive.getEncoderInchesAverage() < curEncoderValue + 10.0)
-        {
-            drive.runLeftDrive(63);
-            drive.runRightDrive(63);
-        }
-        pros::delay(1000);
-        curEncoderValue = drive.getEncoderInchesAverage();
-        while(drive.getEncoderInchesAverage() > curEncoderValue - 5.0)
-        {
-            drive.runLeftDrive(-63);
-            drive.runRightDrive(-63);
-        }
-        pros::delay(1000);
+    setTargetIntake(-200, 100);
+    while(setTargetIntake);
+    odomDriveTo(125.0, 12.0, 50.0, 0.0);
+    while(odomDriveTo);
+    setTargetIntake(200, 100);
+    while(setTargetIntake);
+    odomDriveTo(130.0, 20.0, 50.0, 5.0);
+    while(odomDriveTo);
+    setTargetIntake(200, 100);
 
-        setTargetStick(30, 30)
-    }
-    drive.stop();
+    //MOVE TO CLAMP NEUTRAL
+    odomDriveTo(125.0, 15.0, -50.0, 5.0);
+    //lift dr4b here
+    while(odomDriveTo);
+    odomDriveTo(105.0, 76.0, -50.0, 5.0);
+    //open piston
+    while(odomDriveTo);
+    //clamp quick (close pist + lower arm)
+
+
+    //PUSH HIGH NEUTRAL
+    odomDriveTo(105.0, 35.0, -50.0, 0.0);
+    while(odomDriveTo);
+    odomDriveTo(46.8, 94.0, -50.0, 5.0);
+    while(odomDriveTo);
+
+    //PUSH 2ND NEUTRAL
+    odomDriveTo(35.0, 70.3, 50.0, 5.0);
+    while(odomDriveTo);
+    odomDriveTo(35.0, 35.0, 50.0, 5.0);
+    while(odomDriveTo);
+    odomDriveTo(35.0, 45.0, 50.0, 5.0);
+    while(odomDriveTo);
+
+    //GO UP RAMP
+    odomDriveTo(23.2, 11.4, 50.0, 5.0);
+    while(odomDriveTo);
+    odomDriveTo(23.2, 70.3, 50.0, 5.0);
+    while(odomDriveTo);
+
+
+
+
+
+
+
+
+    
+    
+
+ 
     moveIntake = false;
     intake.stop();
-    moveStick = false;
-    stick.stop();
+
 
 }
 
