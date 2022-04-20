@@ -92,12 +92,13 @@ void highNeutralWinPoint()
     track_task_arg->drivetrain = drive;
     runOdomTracking = false;
 
-    double curEncoderValue = 0;
+    double curEncoderValue = 0.0;
     stick.setHold();
     
     //Change Numbers
     setTargetIntake(1000, 100);
     drive.resetEncoders();
+    setStartingPosition(104.0, 8.75, 0.5);
     runOdomTracking = true;
     runChassisControl = false;
     while(drive.getEncoderInchesAverage() < 35.0)

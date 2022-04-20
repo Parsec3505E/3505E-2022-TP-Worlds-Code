@@ -65,6 +65,19 @@ double yPoseGlobal = Y_START;
 //Do tracking boolean
 bool runOdomTracking = false;
 
+void setStartingPosition(double posX, double posY, double headingStart)
+{
+    runOdomTracking = false;
+    resetTracking();
+    xPoseGlobal = posX;
+    yPoseGlobal = posY;
+    heading = headingStart;
+    heading_raw = headingStart;
+    prevHeading_raw = headingStart;
+    pros::delay(10);
+    runOdomTracking = true;
+}
+
 void resetTracking()
 {
     lEncoderPose = 0.0;

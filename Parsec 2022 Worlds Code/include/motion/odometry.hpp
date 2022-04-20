@@ -6,12 +6,13 @@
 extern const double PI;
 
 extern double heading;
-extern double prevHeading;
 
 extern double xPoseGlobal;
 extern double yPoseGlobal;
 
 extern bool runOdomTracking;
+
+void setStartingPosition(double posX, double posY, double headingStart);
 
 void resetTracking();
 
