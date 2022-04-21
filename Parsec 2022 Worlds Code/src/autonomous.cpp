@@ -42,31 +42,90 @@ void skills()
     double curEncoderValue = 0.0;
 
 
-    //odomDriveTo(x, y, speed, turn);
-    //odomTurnToHeading(angle to turn to);
-    //odomTurnToPos(x, y);
+  
     
-    //PICK BLUE ALLIANCE
-    moveIntake = true;
+    //PICK UP BLUE ALLIANCE
+    //what if i just copied to get the blue aliance from the driver auton lol
+    /*curEncoderValue = drive.getLeftEncoderInches();
+    while(drive.getLeftEncoderInches() < curEncoderValue + 3.5)
+    {
+        drive.runLeftDrive(100);
+        drive.runRightDrive(-100);
+    }
+    drive.stop();
+
+    curEncoderValue = drive.getEncoderInchesAverage();
+    while(drive.getEncoderInchesAverage() < curEncoderValue + 17.0)
+    {
+        drive.runLeftDrive(100);
+        drive.runRightDrive(100);
+    }   
+    drive.stop();
+    pros::delay(100);
+    curEncoderValue = drive.getEncoderInchesAverage();
+    while(drive.getEncoderInchesAverage() > curEncoderValue - 10.0)
+    {
+        drive.runLeftDrive(-75);
+        drive.runRightDrive(-75);
+    }   
+    drive.stop();
+    pros::delay(100);
+    setTargetIntake(200 + 900, 100);
+    curEncoderValue = drive.getEncoderInchesAverage();
+    while(drive.getEncoderInchesAverage() < curEncoderValue + 10.0)
+    {
+        drive.runLeftDrive(100);
+        drive.runRightDrive(100);
+    }   
+    drive.stop();
+    curEncoderValue = drive.getEncoderInchesAverage();
+    setTargetIntake(2240 + 900, 100); 
+    setTargetArm(720.0, 100);
+    while(drive.getEncoderInchesAverage() > curEncoderValue - 3.0)
+    {
+        drive.runLeftDrive(-100);
+        drive.runRightDrive(-100);
+    }  
+    drive.stop();
+    curEncoderValue = drive.getEncoderInchesAverage();
+    while(drive.getEncoderInchesAverage() < curEncoderValue + 2.3)
+    {
+        drive.runLeftDrive(40);
+        drive.runRightDrive(40);
+    }  
+    drive.stop();
+    //718 just for margin
+    while(arm.getEncoderRaw() < 718.0)
+    {
+        //driver.print(2,2,"%.2f", arm.getEncoderRaw());
+        pros::delay(10);
+    }
+    setTargetStick(-115.2, 20);
+    pros::delay(2000);
+    */
     setTargetIntake(-200, 100);
     while(setTargetIntake);
     odomDriveTo(125.0, 12.0, 50.0, 0.0);
     while(odomDriveTo);
-    setTargetIntake(200, 100);
-    while(setTargetIntake);
+   
     odomDriveTo(130.0, 20.0, 50.0, 5.0);
     while(odomDriveTo);
     setTargetIntake(200, 100);
+    while(setTargetIntake);
+    setTargetIntake(200, 100);
+    while(setTargetIntake);
 
     //MOVE TO CLAMP NEUTRAL
     odomDriveTo(125.0, 15.0, -50.0, 5.0);
-    //lift dr4b here
+    setTargetArm(100.0, 100);
     while(odomDriveTo);
     odomDriveTo(105.0, 76.0, -50.0, 5.0);
     //open piston
+    primary_mogo.triggerMogoClamp(true);
     while(odomDriveTo);
     //clamp quick (close pist + lower arm)
-
+    setTargetArm(-100.0, 100);
+    primary_mogo.triggerMogoClamp(false);
 
     //PUSH HIGH NEUTRAL
     odomDriveTo(105.0, 35.0, -50.0, 0.0);
@@ -99,9 +158,7 @@ void skills()
     
 
  
-    moveIntake = false;
-    intake.stop();
-
+    
 
 }
 
