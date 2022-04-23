@@ -51,11 +51,11 @@ void skills()
 
 void endAllTasks()
 {
-    stickTask.suspend();
-    intakeTask.suspend();
-    armTask.suspend();
-    odomTracking.suspend();
-    chassisControl.suspend();
+    stickTask.remove();
+    intakeTask.remove();
+    armTask.remove();
+    odomTracking.remove();
+    chassisControl.remove();
 }
 
 
@@ -231,6 +231,16 @@ void highNeutralWinPoint()
     setTargetStick(-115.2 * 2, 20);
     pros::delay(2000);
 
+    curEncoderValue = drive.getEncoderInchesAverage();
+    while(drive.getEncoderInchesAverage() > curEncoderValue - 5.0)
+    {
+        drive.runLeftDrive(-100);
+        drive.runRightDrive(-100);
+    }  
+    drive.stop();
+
+     pros::delay(500);
+
     /* NON ODOM TURN (INCONSISTENT)
     drive.resetEncoders();
     curEncoderValue = drive.getEncoderInchesAverage();
@@ -267,7 +277,6 @@ void highNeutralWinPoint()
     intakeTask.suspend();
     stickTask.suspend();
     armTask.suspend();
-    pros::delay(3000);
 
 }
 
@@ -275,7 +284,6 @@ void leftSideAuton()
 {
     //Set-up initial heading (change 9 to the offset of stand-off from center of robot)
     //heading = 360 + atan2(TALL_NEUTRAL_Y + 9 - yPoseGlobal, TALL_NEUTRAL_X - xPoseGlobal);
-    pros::Controller driver(pros::E_CONTROLLER_MASTER);
 
     Intake intake = Intake();
     Drivetrain drive = Drivetrain();
@@ -300,116 +308,128 @@ void leftSideAuton()
     
     //Change Numbers
     setTargetIntake(1000, 100);
+    pros::delay(100);
     drive.resetEncoders();
-    setStartingPosition(29.0, 8.75, 0.0);
-    runOdomTracking = true;
-    runChassisControl = false;
-    while(drive.getEncoderInchesAverage() < 35.0)
+    while(drive.getEncoderInchesAverage() < 25.0)
     {
         drive.runLeftDrive(127);
         drive.runRightDrive(127);
-    }   
+    } 
     //driver.print(2,2,"%.1f", drive.getEncoderInchesAverage());
     drive.stop();
-    setTargetIntake(1300, 100);
     pros::delay(600);
 
+    setTargetIntake(1500, 100);
+    pros::delay(600);
 
-    setTargetIntake(900, 100);
-    pros::delay(500);
-
-    curEncoderValue = drive.getLeftEncoderInches();
-    while(drive.getLeftEncoderInches() < curEncoderValue + 38.0)
+    drive.resetEncoders();
+    while(drive.getLeftEncoderInches() > -20.0)
     {
         drive.runLeftDrive(-100);
         drive.runRightDrive(-100);
     }
     drive.stop();
+    pros::delay(750);
 
+    drive.resetEncoders();
+    while(drive.getLeftEncoderInches() < 7.0)
+    {
+        drive.runLeftDrive(100);
+        drive.runRightDrive(-100);
+    }
+    drive.stop();
+    pros::delay(100);
+
+    setTargetIntake(-800, 100);
+    pros::delay(600);
+
+    drive.resetEncoders();
+    while(drive.getLeftEncoderInches() > -20.0)
+    {
+        drive.runLeftDrive(-100);
+        drive.runRightDrive(-100);
+    }
+    drive.stop();
     pros::delay(750);
 
 
-    driveSeconds(drive, 100, -80);
-    driveSeconds(drive, 250, 50);
+    // drive.runRightDrive(-100);
+    // pros::delay(750);
+
+
+
+
+
+    // driveSeconds(drive, 100, -80);
+    // driveSeconds(drive, 250, 50);
     
-    curEncoderValue = drive.getLeftEncoderInches();
-    while(drive.getLeftEncoderInches() < curEncoderValue + 4.0)
-    {
-        drive.runLeftDrive(80);
-        drive.runRightDrive(80);
-    }
-    drive.stop();
+    // curEncoderValue = drive.getLeftEncoderInches();
+    // while(drive.getLeftEncoderInches() < curEncoderValue + 4.0)
+    // {
+    //     drive.runLeftDrive(80);
+    //     drive.runRightDrive(80);
+    // }
+    // drive.stop();
     
-    pros::delay(100);
+    // pros::delay(100);
    
 
-    curEncoderValue = drive.getEncoderInchesAverage();
-    while(drive.getEncoderInchesAverage() > curEncoderValue - 12.0)
-    {
-        drive.runLeftDrive(75);
-        drive.runRightDrive(-75);
-    }   
-    drive.stop();
+    // curEncoderValue = drive.getEncoderInchesAverage();
+    // while(drive.getEncoderInchesAverage() > curEncoderValue - 12.0)
+    // {
+    //     drive.runLeftDrive(75);
+    //     drive.runRightDrive(-75);
+    // }   
+    // drive.stop();
 
-    pros::delay(100);
+    // pros::delay(100);
 
-    setTargetIntake(200 + 900, 100);
+    // setTargetIntake(200 + 900, 100);
 
-    curEncoderValue = drive.getEncoderInchesAverage();
-    while(drive.getEncoderInchesAverage() < curEncoderValue + 10.0)
-    {
-        drive.runLeftDrive(100);
-        drive.runRightDrive(100);
-    }   
-    drive.stop();
-    curEncoderValue = drive.getEncoderInchesAverage();
-    setTargetIntake(2240 + 900, 100); 
-    setTargetArm(720.0, 100);
-    while(drive.getEncoderInchesAverage() > curEncoderValue - 3.0)
-    {
-        drive.runLeftDrive(-100);
-        drive.runRightDrive(-100);
-    }  
-    drive.stop();
-    curEncoderValue = drive.getEncoderInchesAverage();
-    while(drive.getEncoderInchesAverage() < curEncoderValue + 2.3)
-    {
-        drive.runLeftDrive(40);
-        drive.runRightDrive(40);
-    }  
-    drive.stop();
-    //718 just for margin
-    while(arm.getEncoderRaw() < 718.0)
-    {
-        //driver.print(2,2,"%.2f", arm.getEncoderRaw());
-        pros::delay(10);
-    }
-    // multiplied by 2 for torque cartirdge
-    setTargetStick(-115.2 * 2, 20);
-    pros::delay(2000);
+    // curEncoderValue = drive.getEncoderInchesAverage();
+    // while(drive.getEncoderInchesAverage() < curEncoderValue + 10.0)
+    // {
+    //     drive.runLeftDrive(100);
+    //     drive.runRightDrive(100);
+    // }   
+    // drive.stop();
+    // curEncoderValue = drive.getEncoderInchesAverage();
+    // setTargetIntake(2240 + 900, 100); 
+    // setTargetArm(720.0, 100);
+    // while(drive.getEncoderInchesAverage() > curEncoderValue - 3.0)
+    // {
+    //     drive.runLeftDrive(-100);
+    //     drive.runRightDrive(-100);
+    // }  
+    // drive.stop();
+    // curEncoderValue = drive.getEncoderInchesAverage();
+    // while(drive.getEncoderInchesAverage() < curEncoderValue + 2.3)
+    // {
+    //     drive.runLeftDrive(40);
+    //     drive.runRightDrive(40);
+    // }  
+    // drive.stop();
+    // //718 just for margin
+    // while(arm.getEncoderRaw() < 718.0)
+    // {
+    //     //driver.print(2,2,"%.2f", arm.getEncoderRaw());
+    //     pros::delay(10);
+    // }
+    // // multiplied by 2 for torque cartirdge
+    // setTargetStick(-115.2 * 2, 20);
+    // pros::delay(2000);
 
 
-    //ODOM USED HERE  
-    drive.resetEncoders();
-    resetTracking();
-    runChassisControl = false;
-    runOdomTracking = true;
     
-    odomTurnToHeading(70.0 * (PI/180.0));
-    while(runChassisControl)
-    {
-        pros::delay(5);
-    }
-    odomTracking.suspend();
-    chassisControl.suspend();
-    curEncoderValue = drive.getEncoderInchesAverage();
-    setTargetIntake(1000, 100);
-    while(drive.getEncoderInchesAverage() > curEncoderValue - 5.0)
-    {
-        drive.runLeftDrive(-100);
-        drive.runRightDrive(-100);
-    }  
-    drive.stop();
+
+    // curEncoderValue = drive.getEncoderInchesAverage();
+    // setTargetIntake(1000, 100);
+    // while(drive.getEncoderInchesAverage() > curEncoderValue - 5.0)
+    // {
+    //     drive.runLeftDrive(-100);
+    //     drive.runRightDrive(-100);
+    // }  
+    // drive.stop();
     intakeTask.suspend();
     stickTask.suspend();
     armTask.suspend();

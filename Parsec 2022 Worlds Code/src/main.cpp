@@ -76,15 +76,17 @@ void autonomous() {
  * control mode.
  *
  * If no competition control is connected, this function will run immediately
- * following initialize().
+ * following initialize().pros build
+ * 
+ * 
  *
  * If the robot is disabled or communications is lost, the
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
 
-	//highNeutralWinPoint();
-	leftSideAuton();
+	highNeutralWinPoint();
+	//leftSideAuton();
 	
 
 
@@ -92,34 +94,33 @@ void autonomous() {
 
 
 void opcontrol(){
-	try{
-		endAllTasks();
-	}
-	catch(...){}
+	endAllTasks();
 	//highNeutralWinPoint();
 	//odomPrint();
 	// Subsystems
 	Drivetrain drive = Drivetrain();
+	pros::Controller driver(pros::E_CONTROLLER_MASTER);
 	Intake intake = Intake();
 	Arm arm = Arm();
-	Primary primary_mogo = Primary();
+	//Primary primary_mogo = Primary();
+	driver.print(2,2,"Hello");
 	Stick stick = Stick();
 
-	intake.stop();
-	intake.resetEncoder();
+	// intake.stop();
+	// intake.resetEncoder();
 
-	arm.stop();
-	arm.resetEncoder();
+	// arm.stop();
+	// arm.resetEncoder();
 	
-	stick.stop();
-	stick.resetEncoder();
+	// stick.stop();
+	// stick.resetEncoder();
 
 	//initial var declarations
 	int clamp_state = 0;
 	int	pto_state = 0;
 	bool intake_state = false;
 
-	pros::Controller driver(pros::E_CONTROLLER_MASTER);
+	//pros::Controller driver(pros::E_CONTROLLER_MASTER);
 	pros::Controller partner(pros::E_CONTROLLER_PARTNER);
 	stick.setHold();
 	arm.setCoast();
@@ -164,15 +165,15 @@ void opcontrol(){
 		}
 
 		//Clamp Control
-		bool piston_button = partner.get_digital_new_press(DIGITAL_B);
-		if(piston_button && clamp_state % 2 == 0) {
-			primary_mogo.triggerMogoClamp(true);
-			clamp_state++;
-		}
-		else if(piston_button && clamp_state % 2 != 0) {
-			primary_mogo.triggerMogoClamp(false);
-			clamp_state++;
-		}
+		// bool piston_button = partner.get_digital_new_press(DIGITAL_B);
+		// if(piston_button && clamp_state % 2 == 0) {
+		// 	primary_mogo.triggerMogoClamp(true);
+		// 	clamp_state++;
+		// }
+		// else if(piston_button && clamp_state % 2 != 0) {
+		// 	primary_mogo.triggerMogoClamp(false);
+		// 	clamp_state++;
+		// }
 
 		//Intake/Outtake Control
 		if(partner.get_digital_new_press(DIGITAL_UP) && intake_state)
@@ -205,15 +206,15 @@ void opcontrol(){
 		}
 
 		//Spinner Control
-		if (driver.get_digital(DIGITAL_L2) || partner.get_digital(DIGITAL_A)) {
-			primary_mogo.spin(100);
-		}
-		else if (driver.get_digital(DIGITAL_L1) || partner.get_digital(DIGITAL_Y)) {
-			primary_mogo.spin(-100);
-		}
-		else {
-			primary_mogo.stop();
-		}
+		// if (driver.get_digital(DIGITAL_L2) || partner.get_digital(DIGITAL_A)) {
+		// 	primary_mogo.spin(100);
+		// }
+		// else if (driver.get_digital(DIGITAL_L1) || partner.get_digital(DIGITAL_Y)) {
+		// 	primary_mogo.spin(-100);
+		// }
+		// else {
+		// 	primary_mogo.stop();
+		// }
 
 		//Stick Control
 		if (partner.get_digital(DIGITAL_L1)) {
