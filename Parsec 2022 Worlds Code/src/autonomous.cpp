@@ -7,17 +7,17 @@ const double RIGHT_ALLIANCE_X = 0;
 const double LEFT_ALLIANCE_Y = 0;
 
 intake_arg* intake_task_arg = new intake_arg;
-pros::Task intakeTask(moveIntakeFor, intake_task_arg);
+pros::Task intakeTask(moveIntakeFor, intake_task_arg, TASK_PRIORITY_MIN, TASK_STACK_DEPTH_MIN);
 
 arm_arg* arm_task_arg = new arm_arg;
-pros::Task armTask(moveArmFor, arm_task_arg);
+pros::Task armTask(moveArmFor, arm_task_arg, TASK_PRIORITY_MIN, TASK_STACK_DEPTH_MIN);
 
 stick_arg* stick_task_arg = new stick_arg;
-pros::Task stickTask(moveStickFor, stick_task_arg);
+pros::Task stickTask(moveStickFor, stick_task_arg, TASK_PRIORITY_MIN, TASK_STACK_DEPTH_MIN);
 
 drive_arg* track_task_arg = new drive_arg;
-pros::Task odomTracking(poseTracking, track_task_arg);
-pros::Task chassisControl(odomChassisControl, track_task_arg);
+pros::Task odomTracking(poseTracking, track_task_arg, TASK_PRIORITY_MIN, TASK_STACK_DEPTH_MIN);
+pros::Task chassisControl(odomChassisControl, track_task_arg, TASK_PRIORITY_MIN, TASK_STACK_DEPTH_MIN);
 
 
 
@@ -110,7 +110,7 @@ void highNeutralWinPoint()
     }   
     //driver.print(2,2,"%.1f", drive.getEncoderInchesAverage());
     drive.stop();
-    setTargetIntake(1300, 100);
+    setTargetIntake(1700, 100);
     pros::delay(600);
     //Change Turn Factor
     
@@ -131,7 +131,7 @@ void highNeutralWinPoint()
     }
     drive.stop();
     */
-    setTargetIntake(900, 100);
+    setTargetIntake(900, -100);
     pros::delay(500);
     drive.runRightDrive(-100);
     pros::delay(750);
@@ -192,8 +192,8 @@ void highNeutralWinPoint()
     curEncoderValue = drive.getEncoderInchesAverage();
     while(drive.getEncoderInchesAverage() > curEncoderValue - 10.0)
     {
-        drive.runLeftDrive(-75);
-        drive.runRightDrive(-75);
+        drive.runLeftDrive(-60);
+        drive.runRightDrive(-60);
     }   
     drive.stop();
     pros::delay(100);
@@ -210,15 +210,15 @@ void highNeutralWinPoint()
     setTargetArm(720.0, 100);
     while(drive.getEncoderInchesAverage() > curEncoderValue - 3.0)
     {
-        drive.runLeftDrive(-100);
-        drive.runRightDrive(-100);
+        drive.runLeftDrive(-60);
+        drive.runRightDrive(-60);
     }  
     drive.stop();
     curEncoderValue = drive.getEncoderInchesAverage();
     while(drive.getEncoderInchesAverage() < curEncoderValue + 2.3)
     {
-        drive.runLeftDrive(40);
-        drive.runRightDrive(40);
+        drive.runLeftDrive(80);
+        drive.runRightDrive(80);
     }  
     drive.stop();
     //718 just for margin

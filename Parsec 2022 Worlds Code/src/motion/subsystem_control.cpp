@@ -34,6 +34,7 @@ void moveIntakeFor(void* arg)
     {
         intake.intakeMotor->move_absolute(intakeTicksToMove, intakeVelToMove);
     }
+    pros::delay(20);
 }
 
 void moveArmFor(void* arg)
@@ -43,6 +44,7 @@ void moveArmFor(void* arg)
     {
         arm.armMotor->move_absolute(armTicksToMove, armVelToMove);
     }
+    pros::delay(20);
 }
 
 void moveStickFor(void* arg)
@@ -52,4 +54,5 @@ void moveStickFor(void* arg)
     {
         stick.stickMotor->move_absolute(stickTicksToMove, stickVelToMove);
     }
+    pros::delay(20);
 }
