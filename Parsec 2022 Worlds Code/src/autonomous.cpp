@@ -206,7 +206,7 @@ void highNeutralWinPoint()
     }   
     drive.stop();
     curEncoderValue = drive.getEncoderInchesAverage();
-    setTargetIntake(2240 + 900, 100); 
+    setTargetIntake(2450 + 900, 100); 
     setTargetArm(720.0, 100);
     while(drive.getEncoderInchesAverage() > curEncoderValue - 3.0)
     {
@@ -229,14 +229,14 @@ void highNeutralWinPoint()
     }
     // multiplied by 2 for torque cartirdge
     setTargetStick(-115.2 * 2, 20);
-    pros::delay(2000);
+    pros::delay(2750);
 
     curEncoderValue = drive.getEncoderInchesAverage();
     while(drive.getEncoderInchesAverage() > curEncoderValue - 5.0)
     {
         drive.runLeftDrive(-100);
         drive.runRightDrive(-100);
-    }  
+    }
     drive.stop();
 
      pros::delay(500);
@@ -323,7 +323,7 @@ void leftSideAuton()
     pros::delay(600);
 
     drive.resetEncoders();
-    while(drive.getLeftEncoderInches() > -20.0)
+    while(drive.getEncoderInchesAverage() > -20.0)
     {
         drive.runLeftDrive(-100);
         drive.runRightDrive(-100);
@@ -332,7 +332,7 @@ void leftSideAuton()
     pros::delay(750);
 
     drive.resetEncoders();
-    while(drive.getLeftEncoderInches() < 7.0)
+    while(drive.getLeftEncoderInches() < 5.0)
     {
         drive.runLeftDrive(100);
         drive.runRightDrive(-100);
@@ -343,14 +343,48 @@ void leftSideAuton()
     setTargetIntake(-800, 100);
     pros::delay(600);
 
-    drive.resetEncoders();
-    while(drive.getLeftEncoderInches() > -20.0)
-    {
-        drive.runLeftDrive(-100);
-        drive.runRightDrive(-100);
-    }
-    drive.stop();
+    driveSeconds(drive, 2500, -100);
+
     pros::delay(750);
+
+
+    // SHIMMY
+    driveSeconds(drive, 2500, 100);
+    pros::delay(250);
+    
+    driveSeconds(drive, 1500, -100);
+    pros::delay(100);
+
+    setTargetIntake(200 + 900, 100);
+
+    drive.resetEncoders();
+    while(drive.getEncoderInchesAverage() < 7.5)
+    {
+        drive.runLeftDrive(100);
+        drive.runRightDrive(100);
+    }   
+    drive.stop();
+
+    pros::delay(500);
+
+    setTargetIntake(2450 + 900, 100); 
+
+    setTargetArm(720.0, 100);
+
+    drive.resetEncoders();
+    while(drive.getEncoderInchesAverage() > 3.0)
+    {
+        drive.runLeftDrive(-60);
+        drive.runRightDrive(-60);
+    }  
+    drive.stop();
+
+    pros::delay(1000);
+
+    setTargetStick(-115.2 * 2, 20);
+    pros::delay(2750);
+
+
 
 
     // drive.runRightDrive(-100);

@@ -116,7 +116,7 @@ int Drivetrain::getBackEncoderRaw()
     return backEncoder->get_value();
 }
 
-int Drivetrain::getAverageEncorderRaw()
+int Drivetrain::getAverageEncoderRaw()
 {
     return (getRightEncoderRaw() + getLeftEncoderRaw()) / 2.0;
 }

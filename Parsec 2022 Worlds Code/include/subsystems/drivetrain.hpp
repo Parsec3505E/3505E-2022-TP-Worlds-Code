@@ -47,7 +47,7 @@ class Drivetrain{
         int getLeftEncoderRaw();
         int getBackEncoderRaw();
 
-        int getAverageEncorderRaw();
+        int getAverageEncoderRaw();
 
         double getRightEncoderInches();
         double getLeftEncoderInches();
