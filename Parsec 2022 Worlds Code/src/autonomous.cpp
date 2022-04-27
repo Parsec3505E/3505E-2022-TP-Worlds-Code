@@ -342,47 +342,53 @@ void leftSideAuton()
 
     setTargetIntake(-800, 100);
     pros::delay(600);
-
-    driveSeconds(drive, 2500, -100);
+    //wall sqr
+    driveSeconds(drive, 1500, -100);
 
     pros::delay(750);
-
+    
 
     // SHIMMY
-    driveSeconds(drive, 2500, 100);
-    pros::delay(250);
+   driveSeconds(drive, 2000, 100);
     
-    driveSeconds(drive, 1500, -100);
-    pros::delay(100);
+    
+    driveSeconds(drive, 500, -100);
+   
 
-    setTargetIntake(200 + 900, 100);
+   
+    
 
     drive.resetEncoders();
-    while(drive.getEncoderInchesAverage() < 7.5)
+    while(drive.getEncoderInchesAverage() < 18)
     {
         drive.runLeftDrive(100);
         drive.runRightDrive(100);
     }   
     drive.stop();
 
+    
+
+   
+    setTargetIntake(1500, 100);
     pros::delay(500);
-
-    setTargetIntake(2450 + 900, 100); 
-
+   
     setTargetArm(720.0, 100);
-
+    
     drive.resetEncoders();
-    while(drive.getEncoderInchesAverage() > 3.0)
+    while(drive.getEncoderInchesAverage() > -10.0)
     {
         drive.runLeftDrive(-60);
         drive.runRightDrive(-60);
     }  
     drive.stop();
+    
+    setTargetIntake(2500, 100);
 
     pros::delay(1000);
 
     setTargetStick(-115.2 * 2, 20);
     pros::delay(2750);
+    
 
 
 
