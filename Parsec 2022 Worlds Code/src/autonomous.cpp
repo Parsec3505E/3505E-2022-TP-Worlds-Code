@@ -317,10 +317,10 @@ void leftSideAuton()
     } 
     //driver.print(2,2,"%.1f", drive.getEncoderInchesAverage());
     drive.stop();
-    pros::delay(600);
+    pros::delay(500);
 
     setTargetIntake(1500, 100);
-    pros::delay(600);
+    pros::delay(250);
 
     drive.resetEncoders();
     while(drive.getEncoderInchesAverage() > -20.0)
@@ -340,39 +340,38 @@ void leftSideAuton()
     drive.stop();
     pros::delay(100);
 
-    setTargetIntake(-800, 100);
+    setTargetIntake(900, -100);
     pros::delay(600);
     //wall sqr
-    driveSeconds(drive, 1500, -100);
+    driveSeconds(drive, 1000, -100);
 
-    pros::delay(750);
+    pros::delay(400);
     
 
     // SHIMMY
    driveSeconds(drive, 2000, 100);
     
     
-    driveSeconds(drive, 500, -100);
+    driveSeconds(drive, 1500, -80);
    
 
-   
-    
 
     drive.resetEncoders();
-    while(drive.getEncoderInchesAverage() < 18)
+    //move forward a lot more
+    while(drive.getEncoderInchesAverage() < 10.0)
     {
-        drive.runLeftDrive(100);
-        drive.runRightDrive(100);
+        drive.runLeftDrive(80);
+        drive.runRightDrive(80);
     }   
     drive.stop();
 
     
 
    
-    setTargetIntake(1500, 100);
+    setTargetIntake(2400, 100);
     pros::delay(500);
    
-    setTargetArm(720.0, 100);
+    setTargetArm(780.0, 100);
     
     drive.resetEncoders();
     while(drive.getEncoderInchesAverage() > -10.0)
@@ -382,11 +381,11 @@ void leftSideAuton()
     }  
     drive.stop();
     
-    setTargetIntake(2500, 100);
+    setTargetIntake(3000, 100);
 
     pros::delay(1000);
 
-    setTargetStick(-115.2 * 2, 20);
+    setTargetStick(-155.2 * 2, 20);
     pros::delay(2750);
     
 
