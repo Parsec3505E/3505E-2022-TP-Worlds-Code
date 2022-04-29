@@ -10,7 +10,7 @@ Drivetrain::Drivetrain()
     rightFront->set_reversed(true);
     rightFront->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
-    rightBack = new pros::Motor(8);
+    rightBack = new pros::Motor(9);
     rightBack->set_reversed(true);
     rightBack->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
@@ -23,9 +23,9 @@ Drivetrain::Drivetrain()
     leftBack->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
     // Encoder Objects
-    rightEncoder = new pros::ADIEncoder({{14, 'a', 'b'}});
-    leftEncoder = new pros::ADIEncoder({{14, 'c', 'd'}});
-    backEncoder = new pros::ADIEncoder({{14, 'e', 'f'}});
+    rightEncoder = new pros::ADIEncoder({{15, 'a', 'b'}});
+    leftEncoder = new pros::ADIEncoder({{15, 'c', 'd'}});
+    backEncoder = new pros::ADIEncoder({{15, 'e', 'f'}});
 
     // rightEncoder = pros::c::ext_adi_encoder_init(13, 'A', 'B', true);
     // leftEncoder = pros::c::ext_adi_encoder_init(13, 'C', 'D', false);
