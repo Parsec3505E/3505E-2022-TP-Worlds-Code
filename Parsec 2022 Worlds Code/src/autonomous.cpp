@@ -310,8 +310,8 @@ void leftSideAuton()
     //Change Numbers
     setTargetIntake(1000, 100);
     pros::delay(200);
-    drive.resetEncoders();
-    while(drive.getEncoderInchesAverage() < 25.0)
+    curEncoderValue = drive.getEncoderInchesAverage();
+    while(drive.getEncoderInchesAverage() < curEncoderValue + 25.0)
     {
         drive.runLeftDrive(127);
         drive.runRightDrive(127);
@@ -323,8 +323,8 @@ void leftSideAuton()
     setTargetIntake(1500, 100);
     pros::delay(300);
 
-    drive.resetEncoders();
-    while(drive.getLeftEncoderInches() > -15.0)
+    curEncoderValue = drive.getEncoderInchesAverage();
+    while(drive.getLeftEncoderInches() >  curEncoderValue - 15.0)
     {
         drive.runLeftDrive(-100);
         drive.runRightDrive(-100);
@@ -353,8 +353,8 @@ void leftSideAuton()
 
     pros::delay(100);
 
-    drive.resetEncoders();
-    while(drive.getLeftEncoderInches() > -4.0)
+    curEncoderValue = drive.getEncoderInchesAverage();
+    while(drive.getLeftEncoderInches() >  curEncoderValue - 4.0)
     {
         drive.runLeftDrive(-100);
         drive.runRightDrive(-100);
@@ -366,7 +366,6 @@ void leftSideAuton()
     setTargetIntake(-800, 100);
     pros::delay(500);
 
-    drive.resetEncoders();
     
     /*while(drive.getLeftEncoderInches() > -15.0)
     {
