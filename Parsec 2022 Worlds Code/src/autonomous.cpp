@@ -301,6 +301,7 @@ void leftSideAuton()
     arm_task_arg->arm = arm;
     stick_task_arg->stick = stick;
     track_task_arg->drivetrain = drive;
+    setStartingPosition(23.2, 12.0, 0.0);
     runOdomTracking = false;
 
     double curEncoderValue = 0.0;
@@ -308,7 +309,7 @@ void leftSideAuton()
     
     //Change Numbers
     setTargetIntake(1000, 100);
-    pros::delay(100);
+    pros::delay(200);
     drive.resetEncoders();
     while(drive.getEncoderInchesAverage() < 25.0)
     {
@@ -317,40 +318,64 @@ void leftSideAuton()
     } 
     //driver.print(2,2,"%.1f", drive.getEncoderInchesAverage());
     drive.stop();
-    pros::delay(600);
+    //pros::delay(600);
 
     setTargetIntake(1500, 100);
-    pros::delay(600);
+    pros::delay(300);
 
     drive.resetEncoders();
-    while(drive.getLeftEncoderInches() > -20.0)
+    while(drive.getLeftEncoderInches() > -15.0)
     {
         drive.runLeftDrive(-100);
         drive.runRightDrive(-100);
     }
     drive.stop();
-    pros::delay(750);
+    //pros::delay(750);
 
-    drive.resetEncoders();
-    while(drive.getLeftEncoderInches() < 7.0)
+
+    /*drive.resetEncoders();
+    while(drive.getLeftEncoderInches() < 5.0)
     {
         drive.runLeftDrive(100);
         drive.runRightDrive(-100);
     }
     drive.stop();
+    pros::delay(500); */
+
+    //odomTurnToPos(82.3, 35.0);
+    runOdomTracking = true;
+    odomTurnToHeading(38.0 * (PI/180.0));
+    while(runChassisControl)
+    {
+        pros::delay(5);
+    }
+    runOdomTracking = false;
+
     pros::delay(100);
 
-    setTargetIntake(-800, 100);
-    pros::delay(600);
-
     drive.resetEncoders();
-    while(drive.getLeftEncoderInches() > -20.0)
+    while(drive.getLeftEncoderInches() > -4.0)
     {
         drive.runLeftDrive(-100);
         drive.runRightDrive(-100);
     }
     drive.stop();
-    pros::delay(750);
+
+    pros::delay(100);
+
+    setTargetIntake(-800, 100);
+    pros::delay(500);
+
+    drive.resetEncoders();
+    
+    /*while(drive.getLeftEncoderInches() > -15.0)
+    {
+        drive.runLeftDrive(-100);
+        drive.runRightDrive(-100);
+    }
+    drive.stop();
+    pros::delay(750);*/
+    driveSeconds(drive, 2000, -100);
 
 
     // drive.runRightDrive(-100);

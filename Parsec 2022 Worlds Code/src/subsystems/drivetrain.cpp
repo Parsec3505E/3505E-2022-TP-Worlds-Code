@@ -10,15 +10,15 @@ Drivetrain::Drivetrain()
     rightFront->set_reversed(true);
     rightFront->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
-    rightBack = new pros::Motor(9);
+    rightBack = new pros::Motor(10);
     rightBack->set_reversed(true);
     rightBack->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
-	leftFront = new pros::Motor(4);
+	leftFront = new pros::Motor(3);
     leftFront->set_reversed(false);
     leftFront->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
-	leftBack = new pros::Motor(5);
+	leftBack = new pros::Motor(6);
     leftBack->set_reversed(false);
     leftBack->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
