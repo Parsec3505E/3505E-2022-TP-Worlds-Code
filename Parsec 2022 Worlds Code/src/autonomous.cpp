@@ -295,8 +295,6 @@ void leftSideAuton()
     arm.resetEncoder();
     stick.resetEncoder();
 
-    
-
     intake_task_arg->intake = intake;
     arm_task_arg->arm = arm;
     stick_task_arg->stick = stick;
@@ -307,7 +305,7 @@ void leftSideAuton()
     double curEncoderValue = 0.0;
     stick.setHold();
     
-    //Change Numbers
+    //------MOVE FORWARD------
     setTargetIntake(1000, 100);
     pros::delay(200);
     curEncoderValue = drive.getEncoderInchesAverage();
@@ -316,144 +314,105 @@ void leftSideAuton()
         drive.runLeftDrive(127);
         drive.runRightDrive(127);
     } 
-    //driver.print(2,2,"%.1f", drive.getEncoderInchesAverage());
     drive.stop();
-    //pros::delay(600);
-
-    setTargetIntake(1500, 100);
+    
+    //------PICKUP + MOVE BACK------
+    setTargetIntake(1800, 100);
     pros::delay(300);
-
     curEncoderValue = drive.getEncoderInchesAverage();
-    while(drive.getLeftEncoderInches() >  curEncoderValue - 15.0)
+    while(drive.getLeftEncoderInches() >  curEncoderValue - 23.0)
     {
         drive.runLeftDrive(-100);
         drive.runRightDrive(-100);
     }
     drive.stop();
-    //pros::delay(750);
+    pros::delay(150);
 
-
-    /*drive.resetEncoders();
-    while(drive.getLeftEncoderInches() < 5.0)
+    //------MANUAL TURN------
+    curEncoderValue = drive.getEncoderInchesAverage();
+    while(drive.getLeftEncoderInches() < curEncoderValue+ 4.5)
     {
         drive.runLeftDrive(100);
         drive.runRightDrive(-100);
     }
     drive.stop();
-    pros::delay(500); */
+    pros::delay(500);
 
-    //odomTurnToPos(82.3, 35.0);
+    //--------DROP SECONDARY--------
+    setTargetIntake(-550, 100);
+    pros::delay(2000);
+
+    //------SMALL BACKUP------
+    // curEncoderValue = drive.getEncoderInchesAverage();
+    // while(drive.getLeftEncoderInches() > curEncoderValue- 2.0)
+    // {
+    //     drive.runLeftDrive(-80);
+    //     drive.runRightDrive(-80);
+    // }
+    // drive.stop();
+    // pros::delay(500);
+
+    //-----ODOM TURN-----
     runOdomTracking = true;
-    odomTurnToHeading(38.0 * (PI/180.0));
+    odomTurnToHeading(58.0 * (PI/180.0));
     while(runChassisControl)
     {
         pros::delay(5);
     }
     runOdomTracking = false;
-
-    pros::delay(100);
-
-    curEncoderValue = drive.getEncoderInchesAverage();
-    while(drive.getLeftEncoderInches() >  curEncoderValue - 4.0)
-    {
-        drive.runLeftDrive(-100);
-        drive.runRightDrive(-100);
-    }
-    drive.stop();
-
-    pros::delay(100);
-
-    setTargetIntake(-800, 100);
+    pros::delay(200);
+    
+    //-----WALL SQR-----
+    driveSeconds(drive, 1000, -100);
+    drive.runRightDrive(-127);
     pros::delay(500);
 
+
+
+
     
-    /*while(drive.getLeftEncoderInches() > -15.0)
+    //SHIMMY
+    driveSeconds(drive, 1600, 100);
+    driveSeconds(drive, 500, -100);
+
+    //GO IN TO SCOOP BLUE
+    curEncoderValue = drive.getLeftEncoderInches();
+    while(drive.getLeftEncoderInches() < curEncoderValue + 15.0)
+    {
+        drive.runLeftDrive(80);
+        drive.runRightDrive(80);
+    }
+    drive.stop();
+   
+   //SCOOP BLUE GOAL
+    setTargetIntake(2000, 100);
+    pros::delay(1000);
+
+    //MOVE BACK W/ GOAL
+    curEncoderValue = drive.getEncoderInchesAverage();
+    while(drive.getEncoderInchesAverage() > curEncoderValue - 10.0)
+    {
+        drive.runLeftDrive(-75);
+        drive.runRightDrive(-75);
+    }   
+    drive.stop(); 
+
+    //LIFT BLUE HIGHER AND LIFT ARM
+    curEncoderValue = drive.getEncoderInchesAverage();
+    setTargetIntake(3200, 100); 
+    setTargetArm(815.0, 100);
+    while(drive.getEncoderInchesAverage() > curEncoderValue - 3.0)
     {
         drive.runLeftDrive(-100);
         drive.runRightDrive(-100);
-    }
+    }  
     drive.stop();
-    pros::delay(750);*/
-    driveSeconds(drive, 2000, -100);
-
-
-    // drive.runRightDrive(-100);
-    // pros::delay(750);
-
-
-
-
-
-    // driveSeconds(drive, 100, -80);
-    // driveSeconds(drive, 250, 50);
     
-    // curEncoderValue = drive.getLeftEncoderInches();
-    // while(drive.getLeftEncoderInches() < curEncoderValue + 4.0)
-    // {
-    //     drive.runLeftDrive(80);
-    //     drive.runRightDrive(80);
-    // }
-    // drive.stop();
-    
-    // pros::delay(100);
-   
-
-    // curEncoderValue = drive.getEncoderInchesAverage();
-    // while(drive.getEncoderInchesAverage() > curEncoderValue - 12.0)
-    // {
-    //     drive.runLeftDrive(75);
-    //     drive.runRightDrive(-75);
-    // }   
-    // drive.stop();
-
-    // pros::delay(100);
-
-    // setTargetIntake(200 + 900, 100);
-
-    // curEncoderValue = drive.getEncoderInchesAverage();
-    // while(drive.getEncoderInchesAverage() < curEncoderValue + 10.0)
-    // {
-    //     drive.runLeftDrive(100);
-    //     drive.runRightDrive(100);
-    // }   
-    // drive.stop();
-    // curEncoderValue = drive.getEncoderInchesAverage();
-    // setTargetIntake(2240 + 900, 100); 
-    // setTargetArm(720.0, 100);
-    // while(drive.getEncoderInchesAverage() > curEncoderValue - 3.0)
-    // {
-    //     drive.runLeftDrive(-100);
-    //     drive.runRightDrive(-100);
-    // }  
-    // drive.stop();
-    // curEncoderValue = drive.getEncoderInchesAverage();
-    // while(drive.getEncoderInchesAverage() < curEncoderValue + 2.3)
-    // {
-    //     drive.runLeftDrive(40);
-    //     drive.runRightDrive(40);
-    // }  
-    // drive.stop();
-    // //718 just for margin
-    // while(arm.getEncoderRaw() < 718.0)
-    // {
-    //     //driver.print(2,2,"%.2f", arm.getEncoderRaw());
-    //     pros::delay(10);
-    // }
-    // // multiplied by 2 for torque cartirdge
-    // setTargetStick(-115.2 * 2, 20);
-    // pros::delay(2000);
-
+    // multiplied by 2 for torque cartirdge
+    setTargetStick(-115.2 * 2, 20);
+    pros::delay(2000);
 
     
-
-    // curEncoderValue = drive.getEncoderInchesAverage();
-    // setTargetIntake(1000, 100);
-    // while(drive.getEncoderInchesAverage() > curEncoderValue - 5.0)
-    // {
-    //     drive.runLeftDrive(-100);
-    //     drive.runRightDrive(-100);
-    // }  
-    // drive.stop();
     intakeTask.suspend();
     stickTask.suspend();
     armTask.suspend();

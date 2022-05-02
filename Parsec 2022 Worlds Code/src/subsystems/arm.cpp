@@ -4,7 +4,7 @@ Arm::Arm()
 {
 
     // Motors
-    armMotor = new pros::Motor(2);
+    armMotor = new pros::Motor(4);
     armMotor->set_reversed(true);
     armMotor->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
     armMotor->set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
