@@ -110,6 +110,7 @@ void highNeutralWinPoint()
     }   
     //driver.print(2,2,"%.1f", drive.getEncoderInchesAverage());
     drive.stop();
+    //HOOK TALL GOAL
     setTargetIntake(1300, 100);
     pros::delay(600);
     //Change Turn Factor
@@ -198,6 +199,8 @@ void highNeutralWinPoint()
     drive.stop();
     pros::delay(100);
     setTargetIntake(200 + 900, 100);
+
+    //DRIVE INTO ALLIANCE
     curEncoderValue = drive.getEncoderInchesAverage();
     while(drive.getEncoderInchesAverage() < curEncoderValue + 10.0)
     {
@@ -205,15 +208,32 @@ void highNeutralWinPoint()
         drive.runRightDrive(100);
     }   
     drive.stop();
-    curEncoderValue = drive.getEncoderInchesAverage();
-    setTargetIntake(2240 + 900, 100); 
-    setTargetArm(720.0, 100);
-    while(drive.getEncoderInchesAverage() > curEncoderValue - 3.0)
+  
+    curEncoderValue = drive.getLeftEncoderInches();
+    
+    //TURN AWAY FROM WALL
+    while(drive.getLeftEncoderInches() > curEncoderValue - 1.5)
     {
-        drive.runLeftDrive(-100);
-        drive.runRightDrive(-100);
+        drive.runLeftDrive(-70);
+        drive.runRightDrive(70);
     }  
     drive.stop();
+
+    pros::delay(250);
+    driveSeconds(drive, 500, 90);
+    pros::delay(250);
+
+    //PICK UP ALLIANCE
+    setTargetIntake(2240 + 900 + 500, 100); 
+    setTargetArm(720.0, 100);
+
+    // while(drive.getEncoderInchesAverage() > curEncoderValue - 0.25)
+    // {
+    //     drive.runLeftDrive(-20);
+    //     drive.runRightDrive(-20);
+    // }  
+    // drive.stop();
+    /*
     curEncoderValue = drive.getEncoderInchesAverage();
     while(drive.getEncoderInchesAverage() < curEncoderValue + 2.3)
     {
@@ -221,6 +241,7 @@ void highNeutralWinPoint()
         drive.runRightDrive(40);
     }  
     drive.stop();
+    */
     //718 just for margin
     while(arm.getEncoderRaw() < 718.0)
     {
@@ -232,7 +253,7 @@ void highNeutralWinPoint()
     pros::delay(2000);
 
     curEncoderValue = drive.getEncoderInchesAverage();
-    while(drive.getEncoderInchesAverage() > curEncoderValue - 5.0)
+    while(drive.getEncoderInchesAverage() > curEncoderValue - 2.5)
     {
         drive.runLeftDrive(-100);
         drive.runRightDrive(-100);
@@ -259,7 +280,8 @@ void highNeutralWinPoint()
     runChassisControl = false;
     runOdomTracking = true;
     
-    odomTurnToHeading(70.0 * (PI/180.0));
+    //TURN TO TALL GOAL
+    odomTurnToHeading(90.0 * (PI/180.0));
     while(runChassisControl)
     {
         pros::delay(5);

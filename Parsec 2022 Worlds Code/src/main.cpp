@@ -85,8 +85,8 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
-	//highNeutralWinPoint();
-	leftSideAuton();
+	highNeutralWinPoint();
+	//leftSideAuton();
 
 
 }
