@@ -124,6 +124,7 @@ void opcontrol(){
 	//initial var declarations
 	int clamp_state = 0;
 	int	pto_state = 0;
+	int pincer_state = 0;
 	bool intake_state = false;
 
 	//pros::Controller driver(pros::E_CONTROLLER_MASTER);
@@ -244,6 +245,16 @@ void opcontrol(){
 			pto_state++;
 		}
 
+		//Pincer control
+		bool pincer = partner.get_digital_new_press(DIGITAL_RIGHT);
+		if(pincer && pincer_state % 2 == 0) {
+			drive.triggerPincer(true);
+			pincer_state++;
+		}
+		else if(pincer && pincer_state % 2 != 0) {
+			drive.triggerPincer(false);
+			pincer_state++;
+		}
 		
 
 		pros::delay(20);

@@ -27,6 +27,8 @@ Drivetrain::Drivetrain()
     leftEncoder = new pros::ADIEncoder({{16, 'c', 'd'}});
     backEncoder = new pros::ADIEncoder({{16, 'e', 'f'}});
 
+    pincer = new pros::ADIDigitalOut('C');
+
     // rightEncoder = pros::c::ext_adi_encoder_init(13, 'A', 'B', true);
     // leftEncoder = pros::c::ext_adi_encoder_init(13, 'C', 'D', false);
     // backEncoder = pros::c::ext_adi_encoder_init(13, 'E', 'F', false);
@@ -160,6 +162,11 @@ void Drivetrain::resetEncoders()
 double Drivetrain::ticksToInches(int ticks)
 {
     return (((double)ticks) * (2.75*PI)/360.0);
+}
+
+void Drivetrain::triggerPincer(bool trigger)
+{
+    pincer->set_value(trigger);
 }
 
 // int Drivetrain::getDistance()

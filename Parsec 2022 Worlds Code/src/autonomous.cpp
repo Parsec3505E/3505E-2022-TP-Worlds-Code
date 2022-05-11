@@ -111,8 +111,9 @@ void highNeutralWinPoint()
     //driver.print(2,2,"%.1f", drive.getEncoderInchesAverage());
     drive.stop();
     //HOOK TALL GOAL
-    setTargetIntake(1300, 100);
+    setTargetIntake(1300+500, 100);
     pros::delay(600);
+    drive.triggerPincer(true);
     //Change Turn Factor
     
     odomDriveTo(106.0, 9.0, -127, 0.5, 0);
@@ -132,6 +133,11 @@ void highNeutralWinPoint()
     }
     drive.stop();
     */
+
+   //LET GO OF TALL GOAL
+    drive.triggerPincer(false);
+    pros::delay(100);
+    
     setTargetIntake(900, 100);
     pros::delay(500);
     drive.runRightDrive(-100);
@@ -224,7 +230,7 @@ void highNeutralWinPoint()
     pros::delay(250);
 
     //PICK UP ALLIANCE
-    setTargetIntake(2240 + 900 + 500, 100); 
+    setTargetIntake(2240 + 900, 100); 
     setTargetArm(720.0, 100);
 
     // while(drive.getEncoderInchesAverage() > curEncoderValue - 0.25)

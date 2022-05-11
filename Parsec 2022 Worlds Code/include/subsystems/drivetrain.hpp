@@ -16,6 +16,8 @@ class Drivetrain{
     pros::ADIEncoder* leftEncoder;
     pros::ADIEncoder* backEncoder;
 
+    pros::ADIDigitalOut* pincer;
+
     // pros::c::ext_adi_encoder_t rightEncoder;
     // pros::c::ext_adi_encoder_t leftEncoder;
     // pros::c::ext_adi_encoder_t backEncoder;
@@ -58,6 +60,8 @@ class Drivetrain{
         double ticksToInches(int ticks);
 
         void resetEncoders();
+
+        void triggerPincer(bool trigger);
 
         // ULTRASONIC METHODS
 
